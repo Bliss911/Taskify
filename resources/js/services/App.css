@@ -1,0 +1,112 @@
+body {
+  overflow-x: hidden;
+}
+.css-wzq0jj > :not(style) ~ :not(style){
+  margin-left : 0 !important;
+}
+body.chakra-ui-light{
+  background-color: rgb(226, 232,240);
+}
+.notif-links:hover{
+  background: rgba(128, 128, 128, 0.082);
+}
+.qfont {
+  font-family: 'Quicksand', sans-serif !important;
+}
+.afont {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+.link {
+  transition: all 0.3s ease;
+}
+.a-tag {
+  transition: all 0.3s ease;
+}
+
+.link:hover {
+  background: #80808010;
+  color: #0e5291 !important;
+}
+.a-tag:hover {
+  color: #0e5291 !important;
+}
+
+@media screen and (max-width: 876px) {
+  .link {
+    font-size: 14px !important;
+  }
+  .bt {
+    font-size: 14px !important;
+  }
+  #search-box-nav {
+    width: 40px;
+    padding-right: 0;
+  }
+  #search-box-nav:focus {
+    width: 149px;
+  }
+  #search-box-nav-m {
+    width: 35px;
+    padding-right: 0;
+    background: rgba(9, 9, 9, 0.132);
+  }
+  #search-box-nav-m:focus {
+    width: 249px;
+    color: white;
+  }
+}
+ .tab-in-profile{
+  border-color: transparent !important;
+  /* border-width: 2px 1.5px 0px 0px; */
+    font-family: 'Quicksand', sans-serif !important;
+  font-weight: bold;
+  background-color: transparent;
+}
+.RRT__showmore {
+background: transparent !important;
+border-bottom: inherit !important;
+border: none !important;
+}
+.RRT__showmore:focus{
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.panel-in-profile{
+  border-left: 0 !important;
+  border-bottom: 0 !important;
+  border-right: 0 !important;
+  border-top: 1px solid rgba(226, 232, 240) !important;
+  min-height: 200px;
+}
+body.chakra-ui-dark .RRT__tab--selected{
+  background-color: rgba(0, 0, 0, 0.278) !important;
+  color: white;
+}
+body.chakra-ui-dark .panel-in-profile{
+  border-top: 1px solid rgba(255, 255, 255, 0.16) !important;
+}
+.RRT__tabs{
+  flex-wrap: nowrap !important;
+}
+
+.RRT__tab{
+  padding: 10px !important;
+  text-align: center;
+  
+}
+  
+.RRT__tab:not(.RRT__tab--selected){
+  background: rgba(128, 128, 128, 0.08) !important;
+  color: grey;
+}
+.RRT__tab--selected{
+  border-bottom: 1px solid #316dbc !important;
+  transition: all 800ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+@media screen and (max-width: 400px) {
+  #search-box-container {
+    display: none;
+  }
+}

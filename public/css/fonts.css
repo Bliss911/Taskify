@@ -1,0 +1,12 @@
+@font-face {
+    font-family: 'Quicksand';
+    font-style: normal;
+    font-weight: 400;
+    src: url(Quicksand_400_normal.eot); /* http://fonts.gstatic.com/s/quicksand/v21/6xK-dSZaM9iE8KbpRA_LJ3z8mH9BOJvgkP8o18A.eot */
+    src: local('☺'),
+        url(Quicksand_400_normal.eot?#iefix) format('embedded-opentype'), /* http://fonts.gstatic.com/s/quicksand/v21/6xK-dSZaM9iE8KbpRA_LJ3z8mH9BOJvgkP8o18A.eot */
+        url(Quicksand_400_normal.woff2) format('woff2'), /* http://fonts.gstatic.com/s/quicksand/v21/6xK-dSZaM9iE8KbpRA_LJ3z8mH9BOJvgkP8o18Q.woff2 */
+        url(Quicksand_400_normal.woff) format('woff'), /* http://fonts.gstatic.com/s/quicksand/v21/6xK-dSZaM9iE8KbpRA_LJ3z8mH9BOJvgkP8o18I.woff */
+        url(Quicksand_400_normal.ttf) format('truetype'), /* http://fonts.gstatic.com/s/quicksand/v21/6xK-dSZaM9iE8KbpRA_LJ3z8mH9BOJvgkP8o18G0xR41.ttf */
+        url(Quicksand_400_normal.svg#Quicksand_400_normal) format('svg'); /* http://fonts.gstatic.com/l/font?kit=6xK-dSZaM9iE8KbpRA_LJ3z8mH9BOJvgkP8o18M&skey=c01f11fa5439d932&v=v21#Quicksand */
+}
