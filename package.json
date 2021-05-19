@@ -34,6 +34,7 @@
         "react-icons": "^4.2.0",
         "react-motion-layout": "^0.1.3",
         "react-router-dom": "^5.2.0",
+        "react-time-ago": "^6.2.2",
         "react-validation": "^3.0.7",
         "validator": "^13.6.0"
     }

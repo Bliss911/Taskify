@@ -15,6 +15,7 @@ import Login from './pages/Login';
 import Signup from './pages/SignUp';
 import PrivateRoute from './helpers/PrivateRoute';
 import Feed from './pages/Feed';
+import Dashboard from './pages/Dashboard';
 
 
 function App () {
@@ -27,7 +28,7 @@ function App () {
     return (
         <ChakraProvider theme={theme}>
             <ColorModeSwitcher />
-            {/* <PageLoader /> */}
+            {loading && <PageLoader />}
             <Navbar />
             {!loading && <>
                 <Switch>
@@ -56,7 +57,9 @@ function App () {
                             <Route exact path="/login">
                                 <Login />
                             </Route>
-
+                            <PrivateRoute exact patch='/dashboard'>
+                                <Dashboard />
+                            </PrivateRoute>
 
                             <Route path="*">
                                 <NotFound />

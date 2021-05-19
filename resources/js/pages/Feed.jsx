@@ -56,6 +56,7 @@ export default function Feed() {
                         base: "15px",
                         md: "",
                     })}
+                    boxShadow="md"
                 >
                     <Box p={3}>
                         <Text

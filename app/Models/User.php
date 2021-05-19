@@ -70,6 +70,7 @@ class User extends Authenticatable implements JWTSubject
             'email' => $this->email,
             'role' => $this->role,
             'phone_number' => $this->phone_number,
+            'joined' => $this->created_at
 
         ];
     }

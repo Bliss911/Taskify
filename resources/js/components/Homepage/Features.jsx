@@ -56,7 +56,7 @@ export default function SplitWithImage() {
                     </Text>
                     <Heading className="qfont">We are the biggest gig.</Heading>
                     <Text className="afont" color={"gray.500"} fontSize={"lg"}>
-                        Sidegig.ng is a platform created for the main purpose of
+                        Taskify is a platform created for the main purpose of
                         helping you out. There is no limit to how much you can
                         make from this platform.{" "}
                     </Text>

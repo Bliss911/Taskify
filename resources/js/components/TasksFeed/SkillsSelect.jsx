@@ -11,7 +11,7 @@ function RadioCard(props) {
     const checkbox = getCheckboxProps();
 
     return (
-        <Box as="label">
+        <Box as="label" px={2}>
             <input {...input} />
             <Box
                 onClick={() => {
