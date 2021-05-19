@@ -6,14 +6,12 @@ function NotFound() {
         <>
             {" "}
             <div className="not_found_container">
-                <div className="not_found_error">404</div>
+                <div className="not_found_error">In Progress</div>
 
                 <span className="not_found_info">
                     Page not found
-                    <br /> Our developers may be tired or sleeping at the
-                    moment.
+                    <br /> This page is still a work in progress
                     <br />
-                    Let's go<Link to="/"> home</Link> and try from there.
                 </span>
             </div>
         </>

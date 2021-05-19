@@ -13,6 +13,7 @@ import {
     FormHelperText,
 } from "@chakra-ui/react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthProvider";
 
 export default function LoginForm() {
@@ -84,7 +85,7 @@ export default function LoginForm() {
                                     *at least six characters
                                 </FormHelperText>
                             </FormControl>
-                            <Stack spacing={10}>
+                            <Stack spacing={5}>
                                 <Button
                                     bg={"blue.400"}
                                     color={"white"}
@@ -97,6 +98,55 @@ export default function LoginForm() {
                                 >
                                     Sign in
                                 </Button>
+                                <Link
+                                    to="/join"
+                                    style={{
+                                        display: "block",
+                                        width: "fit-content",
+                                        margin: "auto",
+                                        paddingTop: "5px",
+                                    }}
+                                >
+                                    <Button
+                                        bg={"transparent"}
+                                        color={"blue.500"}
+                                        _hover={{
+                                            bg: "blue.500",
+                                            color: "white",
+                                        }}
+                                    >
+                                        Sign up instead
+                                    </Button>
+                                </Link>
+                                <Text
+                                    textAlign="center"
+                                    className="afont"
+                                    style={{
+                                        marginTop: "0",
+                                    }}
+                                >
+                                    OR
+                                </Text>
+                                <Link
+                                    to="/enroll"
+                                    style={{
+                                        display: "block",
+                                        width: "fit-content",
+                                        margin: "auto",
+                                        paddingTop: "5px",
+                                    }}
+                                >
+                                    <Button
+                                        bg={"transparent"}
+                                        color={"blue.500"}
+                                        _hover={{
+                                            bg: "blue.500",
+                                            color: "white",
+                                        }}
+                                    >
+                                        Enroll as Vendor
+                                    </Button>
+                                </Link>
                             </Stack>
                         </Stack>
                     </Box>

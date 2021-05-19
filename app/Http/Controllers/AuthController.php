@@ -124,4 +124,9 @@ class AuthController extends Controller
             return $this->sendResult($message, $data, $errors, $status);
         }
     }
+    public function logout()
+    {
+        Auth::logout();
+        return $this->sendResult('logout successful', [], [], true);
+    }
 }

@@ -16,7 +16,7 @@ import { useState, useEffect } from "react";
 import JobsCheckBox from "./JobsCheckbox";
 import cogoToast from "cogo-toast";
 import axios from "axios";
-import { Redirect } from "react-router-dom";
+import { Redirect, Link } from "react-router-dom";
 
 export default function EnrollForm() {
     const [show, setShow] = useState(false);
@@ -190,7 +190,7 @@ export default function EnrollForm() {
                                 </FormHelperText>
                             </FormControl>
                             <JobsCheckBox setJobs={setJobs} jobs={jobs} />
-                            <Stack spacing={10}>
+                            <Stack spacing={5}>
                                 <Button
                                     bg={"blue.400"}
                                     color={"white"}
@@ -203,6 +203,26 @@ export default function EnrollForm() {
                                 >
                                     Enroll Now
                                 </Button>
+                                <Link
+                                    to="/join"
+                                    style={{
+                                        display: "block",
+                                        width: "fit-content",
+                                        margin: "auto",
+                                        paddingTop: "5px",
+                                    }}
+                                >
+                                    <Button
+                                        bg={"transparent"}
+                                        color={"blue.500"}
+                                        _hover={{
+                                            bg: "blue.500",
+                                            color: "white",
+                                        }}
+                                    >
+                                        Sign up instead
+                                    </Button>
+                                </Link>
                             </Stack>
                         </Stack>
                     </Box>

@@ -1,22 +1,22 @@
 .not_found_container {
-  height: 80vh;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  text-align: center;
+    height: 80vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
 }
 
 .not_found_error {
-  font-family: 'Quicksand';
-  font-size: 95px;
-  font-style: italic;
-  animation: noise 2s linear infinite;
-  overflow: default;
+    font-family: "Quicksand";
+    font-size: 95px;
+    font-style: italic;
+    animation: noise 2s linear infinite;
+    overflow: default;
 }
 
-.not_found_error:after {
+/* .not_found_error:after {
   content: '404';
   font-family: 'Quicksand';
   font-size: 100px;
@@ -34,35 +34,35 @@
   opacity: 0;
   color: blue;
   animation: noise-1 0.2s linear infinite;
-}
+} */
 
 .not_found_info {
-  font-family: 'Quicksand';
-  font-size: 15px;
-  font-style: italic;
+    font-family: "Quicksand";
+    font-size: 15px;
+    font-style: italic;
 
-  animation: noise-3 1s linear infinite;
+    animation: noise-3 1s linear infinite;
 }
 
 .not_found_error:before {
-  content: '404';
-  font-family: 'Quicksand';
-  font-size: 100px;
-  font-style: italic;
-  text-align: center;
+    content: "404";
+    font-family: "Quicksand";
+    font-size: 100px;
+    font-style: italic;
+    text-align: center;
 
-  margin: auto;
-  position: absolute;
-  width: fit-content;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  opacity: 0;
-  color: red;
-  animation: noise-2 0.2s linear infinite;
+    margin: auto;
+    position: absolute;
+    width: fit-content;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    opacity: 0;
+    color: red;
+    animation: noise-2 0.2s linear infinite;
 }
-
+/*
 @keyframes noise-1 {
   0%,
   20%,
@@ -151,4 +151,4 @@
     opacity: 1;
     transform: scaleX(10) rotate(60deg);
   }
-}
+} */

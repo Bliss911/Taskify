@@ -1,10 +1,24 @@
 import { Box, Text, Flex, Divider } from "@chakra-ui/layout";
-import React from "react";
-import { useBreakpointValue, SlideFade } from "@chakra-ui/react";
+import React, { useState } from "react";
+import {
+    useBreakpointValue,
+    SlideFade,
+    IconButton,
+    useColorModeValue,
+} from "@chakra-ui/react";
 import TaskLinkBar from "../components/TasksFeed/TaskLinkBar";
 import SkillsSelect from "../components/TasksFeed/SkillsSelect";
+import { MdMenu } from "react-icons/md";
 
 export default function Feed() {
+    const [currentTab, setCurrentTab] = useState("All");
+    const [loading, setLoading] = useState(false);
+    const [show, setShow] = useState(false);
+    const searchCategories = (v) => {
+        setCurrentTab(v.name);
+
+        //search using id
+    };
     return (
         <>
             <Flex
@@ -19,12 +33,29 @@ export default function Feed() {
                 overflowY="scroll"
             >
                 <Box
-                    width={useBreakpointValue({ base: "100%", md: "32%" })}
-                    display={useBreakpointValue({
-                        base: "none",
+                    width={useBreakpointValue({
+                        base: "60%",
+                        md: "32%",
+                    })}
+                    position={useBreakpointValue({
+                        base: "absolute",
                         md: "initial",
                     })}
+                    transform={useBreakpointValue({
+                        base: show ? "translateX(0)" : "translateX(-102%)",
+                        md: "",
+                    })}
+                    transition="all 0.4s ease"
+                    top="0"
                     height="100%"
+                    bg={useBreakpointValue({
+                        base: useColorModeValue("white", "#1a202c"),
+                        md: "initial",
+                    })}
+                    pr={useBreakpointValue({
+                        base: "15px",
+                        md: "",
+                    })}
                 >
                     <Box p={3}>
                         <Text
@@ -40,14 +71,22 @@ export default function Feed() {
                     </Box>
 
                     <Divider width={"100%"} margin="auto" height="5px" />
-                    <SkillsSelect />
+                    <SkillsSelect
+                        searchCategories={searchCategories}
+                        setShow={setShow}
+                    />
                 </Box>
+
                 <Box
                     width={useBreakpointValue({ base: "100%", md: "65%" })}
                     height="100%"
                     top="0"
                 >
-                    <Box p={3}>
+                    <Flex
+                        p={3}
+                        alignItems="center"
+                        justifyContent="space-between"
+                    >
                         <Text
                             id="top"
                             color="#0ca25f"
@@ -56,9 +95,24 @@ export default function Feed() {
                             fontWeight="bold"
                             className="qfont"
                         >
-                            Available Tasks
+                            {currentTab + " "} Tasks
                         </Text>
-                    </Box>
+                        <Box
+                            onClick={() => {
+                                setShow((prev) => !prev);
+                            }}
+                            as="span"
+                            display={useBreakpointValue({
+                                base: "block",
+                                md: "none",
+                            })}
+                            color="#0ca25f"
+                        >
+                            <IconButton>
+                                <MdMenu />
+                            </IconButton>
+                        </Box>
+                    </Flex>
                     <Divider width={"100%"} margin="auto" height="5px" />
                     <Box>
                         <SlideFade dir="left" in>

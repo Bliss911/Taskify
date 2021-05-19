@@ -11,6 +11,7 @@ import {
 import { Link } from "react-router-dom";
 
 import Logo from "./Logo";
+import { useAuth } from "../../../contexts/AuthProvider";
 
 const NavBar = (props) => {
     const [isOpen, setIsOpen] = React.useState(false);
@@ -75,6 +76,7 @@ const MenuItem = ({ children, isLast, to = "/", ...rest }) => {
 };
 
 const MenuLinks = ({ isOpen }) => {
+    const { isAuth, logout } = useAuth();
     return (
         <Box
             display={{ base: isOpen ? "block" : "none", md: "block" }}
@@ -96,42 +98,85 @@ const MenuLinks = ({ isOpen }) => {
                 <MenuItem>
                     <Link to="/how_it_works">How It works</Link>
                 </MenuItem>
-                <MenuItem>
-                    <Link to="/join">Got a Task?</Link>{" "}
-                </MenuItem>
-                <MenuItem>
-                    <Link to="/enroll">Enroll&Earn</Link>{" "}
-                </MenuItem>
-                <MenuItem isLast>
-                    <Link to="/login">
-                        <Button
-                            size="sm"
-                            rounded="md"
-                            color={[
-                                "primary.500",
-                                "primary.500",
-                                "white",
-                                "white",
-                            ]}
-                            bg={[
-                                "white",
-                                "white",
-                                "primary.500",
-                                "primary.500",
-                            ]}
-                            _hover={{
-                                bg: [
-                                    "primary.100",
-                                    "primary.100",
-                                    "primary.600",
-                                    "primary.600",
-                                ],
-                            }}
-                        >
-                            Login
-                        </Button>
-                    </Link>
-                </MenuItem>
+                {!isAuth && (
+                    <>
+                        {" "}
+                        <MenuItem>
+                            <Link to="/join">Got a Task?</Link>{" "}
+                        </MenuItem>
+                        <MenuItem>
+                            <Link to="/enroll">Enroll&Earn</Link>{" "}
+                        </MenuItem>
+                        <MenuItem isLast>
+                            <Link to="/login">
+                                <Button
+                                    size="sm"
+                                    rounded="md"
+                                    color={[
+                                        "primary.500",
+                                        "primary.500",
+                                        "white",
+                                        "white",
+                                    ]}
+                                    bg={[
+                                        "white",
+                                        "white",
+                                        "primary.500",
+                                        "primary.500",
+                                    ]}
+                                    _hover={{
+                                        bg: [
+                                            "primary.100",
+                                            "primary.100",
+                                            "primary.600",
+                                            "primary.600",
+                                        ],
+                                    }}
+                                >
+                                    Login
+                                </Button>
+                            </Link>
+                        </MenuItem>
+                    </>
+                )}
+                {isAuth && (
+                    <>
+                        <MenuItem>
+                            <Link to="/dashboard">Dashboard</Link>
+                        </MenuItem>
+                        <MenuItem isLast>
+                            <Button
+                                onClick={() => {
+                                    logout();
+                                }}
+                                size="sm"
+                                rounded="md"
+                                color={[
+                                    "primary.500",
+                                    "primary.500",
+                                    "white",
+                                    "white",
+                                ]}
+                                bg={[
+                                    "white",
+                                    "white",
+                                    "primary.500",
+                                    "primary.500",
+                                ]}
+                                _hover={{
+                                    bg: [
+                                        "primary.100",
+                                        "primary.100",
+                                        "primary.600",
+                                        "primary.600",
+                                    ],
+                                }}
+                            >
+                                Logout
+                            </Button>
+                        </MenuItem>
+                    </>
+                )}
             </Stack>
         </Box>
     );

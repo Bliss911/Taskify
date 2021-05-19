@@ -4,11 +4,14 @@ import {
     Stack,
     Text,
     useColorModeValue,
+    Button,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import Logo from "./Header/Logo";
+import { useAuth } from "../../contexts/AuthProvider";
 
 export default function SmallCentered() {
+    const { isAuth, logout } = useAuth();
     return (
         <Box
             bg={useColorModeValue("primary.500", "gray.900")}
@@ -40,9 +43,48 @@ export default function SmallCentered() {
                     <Link to="/">Home</Link>
                     <Link to="/tasks">Tasks</Link>
                     <Link to="/how_it_works">How It Works</Link>
-                    <Link to="/join">Join</Link>
-                    <Link to="/enroll">Enroll</Link>
-                    <Link to="/login">Login</Link>
+                    {!isAuth && (
+                        <>
+                            {" "}
+                            <Link to="/join">Join</Link>
+                            <Link to="/enroll">Enroll</Link>
+                            <Link to="/login">Login</Link>
+                        </>
+                    )}
+                    {isAuth && (
+                        <>
+                            <Link to="/dashboard">Dashboard</Link>
+                            <Button
+                                onClick={() => {
+                                    logout();
+                                }}
+                                size="sm"
+                                rounded="md"
+                                color={[
+                                    "primary.500",
+                                    "primary.500",
+                                    "white",
+                                    "white",
+                                ]}
+                                bg={[
+                                    "white",
+                                    "white",
+                                    "primary.500",
+                                    "primary.500",
+                                ]}
+                                _hover={{
+                                    bg: [
+                                        "primary.100",
+                                        "primary.100",
+                                        "primary.600",
+                                        "primary.600",
+                                    ],
+                                }}
+                            >
+                                Logout
+                            </Button>
+                        </>
+                    )}
                 </Stack>
             </Container>
 

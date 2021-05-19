@@ -14,6 +14,10 @@ function RadioCard(props) {
         <Box as="label">
             <input {...input} />
             <Box
+                onClick={() => {
+                    props.searchCategories(props.v);
+                    props.setShow(false);
+                }}
                 className="qfont"
                 {...checkbox}
                 cursor="pointer"
@@ -34,11 +38,12 @@ function RadioCard(props) {
 }
 
 // Step 2: Use the `useRadioGroup` hook to control a group of custom radios.
-export default function SkillsSelect() {
-    const [loading, setLoading] = useState(true);
+export default function SkillsSelect({ searchCategories, setShow }) {
+    const [loading, setLoading] = useState(false);
     const { skills, setSkills } = useAuth();
 
     const fetchhJobs = async () => {
+        setLoading(true);
         try {
             const dt = await axios.get("/api/jobslist");
             const { data } = dt.data;
@@ -59,8 +64,9 @@ export default function SkillsSelect() {
     const group = getRootProps();
 
     useEffect(() => {
-        if (skills.length != 0) return;
-        fetchhJobs();
+        if (skills.length == 0) {
+            fetchhJobs();
+        }
     }, []);
     return (
         <>
@@ -71,7 +77,13 @@ export default function SkillsSelect() {
                         {skills.map((v) => {
                             const radio = getRadioProps({ value: v.name });
                             return (
-                                <RadioCard key={v.name} {...radio}>
+                                <RadioCard
+                                    v={v}
+                                    setShow={setShow}
+                                    searchCategories={searchCategories}
+                                    key={v.name}
+                                    {...radio}
+                                >
                                     {v.name}
                                 </RadioCard>
                             );
