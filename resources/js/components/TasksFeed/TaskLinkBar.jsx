@@ -1,67 +1,155 @@
-import { Box, Text, Flex, Stack, HStack } from "@chakra-ui/layout";
-import React from "react";
+import { Box, Text, Flex, Stack, HStack, Badge } from "@chakra-ui/layout";
+import React, { useEffect, useState } from "react";
 
-import { MdDescription, MdChevronRight, MdLocationOn } from "react-icons/md";
+import {
+    MdDescription,
+    MdChevronRight,
+    MdLocationOn,
+    MdCollections,
+} from "react-icons/md";
+import { Link } from "react-router-dom";
+import { useGenCtx } from "../../contexts/GeneralProvider";
+import { useAuth } from "../../contexts/AuthProvider";
 
-export default function TaskLinkBar() {
+export default function TaskLinkBar({ s }) {
+    const { user } = useAuth();
+
+    const [bidders, setBidders] = useState([]);
+    const serializeBids = () => {
+        if (user && user.role == "VENDOR") {
+            const bidvendors = [];
+            s &&
+                s.bids.forEach((bid) => {
+                    bidvendors.push(bid.vendor.id);
+                });
+            setBidders(bidvendors);
+        }
+    };
+
+    const { setTask } = useGenCtx();
+
+    useEffect(() => {
+        serializeBids();
+    }, []);
     return (
-        <Flex
-            py={6}
-            boxShadow="md"
-            px={3}
-            _hover={{
-                bg: "#f0f0f0",
-                cursor: "pointer",
-                transition: "all .3s ease",
-                color: "black",
-            }}
-        >
-            <Stack spacing={6}>
-                <Flex>
-                    <Box as="span" pr={3} pt={1} fontSize="20px" color="green">
-                        <MdChevronRight />
-                    </Box>
-                    <Text fontWeight="bold" as="h4" className="qfont">
-                        i want to move furniture
-                    </Text>
-                </Flex>
-                <Flex alignItems="flex-start">
-                    <Box as="span" pr={3} pt={1} fontSize="18px" color="green">
-                        <MdDescription />
-                    </Box>
-
-                    <Text as="p" className="afont" fontWeight="light">
-                        i want to move furniture from here to hjdbjcx
-                        hchxhvsgsgusj ssggs syy s s sysygygx syys ts stgsg shhid
-                        dydiiii ydyyd
-                    </Text>
-                </Flex>
-
-                <HStack className="qfont">
-                    <Text as="h4" color="#0ca25f" textTransform="uppercase">
-                        Help Moving
-                    </Text>
+        <Link to="/viewtask">
+            <Stack
+                position="relative"
+                py={6}
+                boxShadow="md"
+                px={3}
+                bg="gray.100"
+                rounded="md"
+                _hover={{
+                    bg: "#ffffff",
+                    cursor: "pointer",
+                    transition: "all .3s ease",
+                    color: "black",
+                    boxShadow: "lg",
+                }}
+                my={3}
+                onClick={() => {
+                    setTask({ ...s, bidders });
+                }}
+            >
+                {bidders.includes(user.id) && (
+                    <Badge
+                        bg="green.500"
+                        color="white"
+                        position="absolute"
+                        top="0"
+                        right="0"
+                    >
+                        You bid for this.
+                    </Badge>
+                )}
+                <Stack spacing={6}>
+                    <Flex justifyContent="space-between">
+                        <Flex>
+                            <Box
+                                as="span"
+                                pr={3}
+                                pt={1}
+                                fontSize="20px"
+                                color="green"
+                            >
+                                <MdChevronRight />
+                            </Box>
+                            <Text fontWeight="bold" as="h4" className="qfont">
+                                {s.title}
+                            </Text>
+                        </Flex>
+                        <Box width="20%" px={2}>
+                            <Text
+                                fontWeight="bold"
+                                color="green.500"
+                                className="qfont"
+                            >
+                                Offer: ${s.offer}
+                            </Text>
+                        </Box>
+                    </Flex>
                     <Flex alignItems="flex-start">
-                        <Box as="span" pt={1} fontSize="18px" color="green">
-                            <MdLocationOn />
+                        <Box
+                            as="span"
+                            pr={3}
+                            pt={1}
+                            fontSize="18px"
+                            color="green"
+                        >
+                            <MdDescription />
                         </Box>
 
-                        <Text
-                            as="h4"
-                            color="gray"
-                            fontWeight="bold"
-                            textTransform="uppercase"
-                        >
-                            Uyo
+                        <Text as="p" className="afont" fontWeight="light">
+                            {s.description}
                         </Text>
                     </Flex>
-                </HStack>
+
+                    <HStack className="qfont" pl={"30px"}>
+                        {s.skill.map((k, i) => {
+                            return (
+                                <Text
+                                    key={i}
+                                    as="h4"
+                                    color="#0ca25f"
+                                    textTransform="uppercase"
+                                >
+                                    {k.name}
+                                </Text>
+                            );
+                        })}
+                        ;
+                        <Flex alignItems="flex-start">
+                            <Box as="span" pt={1} fontSize="18px" color="green">
+                                <MdLocationOn />
+                            </Box>
+
+                            <Text
+                                as="h4"
+                                color="gray"
+                                fontWeight="bold"
+                                textTransform="uppercase"
+                            >
+                                {s.location}
+                            </Text>
+                        </Flex>
+                        <Flex alignItems="flex-start">
+                            <Box as="span" pt={1} fontSize="18px" color="green">
+                                <MdCollections />
+                            </Box>
+
+                            <Text
+                                as="h4"
+                                color="gray"
+                                fontWeight="bold"
+                                textTransform="uppercase"
+                            >
+                                {s.bids.length + "bids"}
+                            </Text>
+                        </Flex>
+                    </HStack>
+                </Stack>
             </Stack>
-            <Box width="20%" px={2}>
-                <Text fontWeight="bold" className="qfont">
-                    Offer: $60
-                </Text>
-            </Box>
-        </Flex>
+        </Link>
     );
 }

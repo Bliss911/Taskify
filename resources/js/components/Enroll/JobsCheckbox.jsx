@@ -10,7 +10,7 @@ import {
     Skeleton,
 } from "@chakra-ui/react";
 
-export default function JobsCheckBox({ setJobs, jobs }) {
+export default function JobsCheckBox({ setJobs, jobs, text }) {
     const [l, setL] = useState(true);
     const [joblist, setJobList] = useState([]);
     const [ERR, setERR] = useState(null);
@@ -50,12 +50,10 @@ export default function JobsCheckBox({ setJobs, jobs }) {
     }, []);
     return (
         <>
-            <Text className="qfont">
-                Select one or more jobs you can complete
-            </Text>
-            <Text className="afont" as={"small"}>
+            <Text className="qfont">{text}</Text>
+            {/* <Text className="afont" as={"small"}>
                 *You can change this later
-            </Text>
+            </Text> */}
 
             <Skeleton isLoaded={!l && !ERR}>
                 <Stack>

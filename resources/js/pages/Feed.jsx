@@ -1,24 +1,60 @@
 import { Box, Text, Flex, Divider } from "@chakra-ui/layout";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     useBreakpointValue,
     SlideFade,
     IconButton,
     useColorModeValue,
+    Spinner,
 } from "@chakra-ui/react";
 import TaskLinkBar from "../components/TasksFeed/TaskLinkBar";
 import SkillsSelect from "../components/TasksFeed/SkillsSelect";
 import { MdMenu } from "react-icons/md";
-
+import axios from "axios";
+import ErrorBanner from "../components/ErrorBanner";
 export default function Feed() {
     const [currentTab, setCurrentTab] = useState("All");
     const [loading, setLoading] = useState(false);
     const [show, setShow] = useState(false);
+    const [skills, setSkills] = useState([]);
+    const [error, setErr] = useState(null);
+
     const searchCategories = (v) => {
         setCurrentTab(v.name);
-
-        //search using id
+        fetchAllTasks(v.id);
     };
+    const fetchAllTasks = async (id = null) => {
+        setLoading(true);
+        setErr(null);
+        const link = "/api/tasks";
+        if (!id) {
+            try {
+                const dt = await axios.post(link);
+                const { data } = dt.data;
+                setSkills(data);
+                console.log(data);
+                setLoading(false);
+            } catch (error) {
+                setErr(error.message);
+                setLoading(false);
+            }
+        } else {
+            try {
+                const dt = await axios.post(link, { id });
+                const { data } = dt.data;
+                setSkills(data);
+                console.log(data);
+                setLoading(false);
+            } catch (error) {
+                setErr(error.message);
+                setLoading(false);
+            }
+        }
+    };
+
+    useEffect(() => {
+        fetchAllTasks();
+    }, []);
     return (
         <>
             <Flex
@@ -116,30 +152,28 @@ export default function Feed() {
                     </Flex>
                     <Divider width={"100%"} margin="auto" height="5px" />
                     <Box>
-                        <SlideFade dir="left" in>
-                            <TaskLinkBar />
-                        </SlideFade>
-                        <SlideFade dir="left" in>
-                            <TaskLinkBar />
-                        </SlideFade>
-                        <SlideFade dir="left" in>
-                            <TaskLinkBar />
-                        </SlideFade>
-                        <SlideFade dir="left" in>
-                            <TaskLinkBar />
-                        </SlideFade>
-                        <SlideFade dir="left" in>
-                            <TaskLinkBar />
-                        </SlideFade>
-                        <SlideFade dir="left" in>
-                            <TaskLinkBar />
-                        </SlideFade>
-                        <SlideFade dir="left" in>
-                            <TaskLinkBar />
-                        </SlideFade>
-                        <SlideFade dir="left" in>
-                            <TaskLinkBar />
-                        </SlideFade>
+                        {loading && !error && (
+                            <Spinner size="lg" colorScheme="green.500" />
+                        )}
+                        {!loading && !error && (
+                            <>
+                                {skills.map((s, i) => {
+                                    return (
+                                        <SlideFade dir="left" key={i} in>
+                                            <TaskLinkBar s={s} />
+                                        </SlideFade>
+                                    );
+                                })}
+                            </>
+                        )}
+                        {!loading && error && (
+                            <>
+                                <ErrorBanner
+                                    message={error.message}
+                                    retry={fetchAllTasks}
+                                />
+                            </>
+                        )}
                     </Box>
                 </Box>
             </Flex>

@@ -7,13 +7,17 @@ import AuthProvider from "./contexts/AuthProvider";
 import TimeAgo from 'javascript-time-ago'
 
 import en from 'javascript-time-ago/locale/en'
+import GeneralProvider from "./contexts/GeneralProvider";
 
 TimeAgo.addDefaultLocale(en)
 
 ReactDOM.render(
     <BrowserRouter>
         <AuthProvider>
-            <App />
+            <GeneralProvider>
+
+                <App />
+            </GeneralProvider>
         </AuthProvider>
     </BrowserRouter>,
     document.getElementById("app")

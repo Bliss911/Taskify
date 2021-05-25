@@ -74,19 +74,33 @@ export default function SkillsSelect({ searchCategories, setShow }) {
                 <>
                     {" "}
                     <Stack {...group}>
-                        {skills.map((v) => {
+                        {skills.map((v, i) => {
                             const radio = getRadioProps({ value: v.name });
-                            return (
-                                <RadioCard
-                                    v={v}
-                                    setShow={setShow}
-                                    searchCategories={searchCategories}
-                                    key={v.name}
-                                    {...radio}
-                                >
-                                    {v.name}
-                                </RadioCard>
-                            );
+                            if (v.name == "All") {
+                                return (
+                                    <RadioCard
+                                        v={{ id: null, name: "All" }}
+                                        setShow={setShow}
+                                        searchCategories={searchCategories}
+                                        key={"all"}
+                                        {...radio}
+                                    >
+                                        All
+                                    </RadioCard>
+                                );
+                            } else {
+                                return (
+                                    <RadioCard
+                                        v={v}
+                                        setShow={setShow}
+                                        searchCategories={searchCategories}
+                                        key={v.name}
+                                        {...radio}
+                                    >
+                                        {v.name}
+                                    </RadioCard>
+                                );
+                            }
                         })}
                     </Stack>
                 </>

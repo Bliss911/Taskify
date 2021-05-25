@@ -27,7 +27,7 @@ function App () {
     })
     return (
         <ChakraProvider theme={theme}>
-            <ColorModeSwitcher />
+            {/* <ColorModeSwitcher /> */}
             {loading && <PageLoader />}
             <Navbar />
             {!loading && <>
@@ -57,7 +57,22 @@ function App () {
                             <Route exact path="/login">
                                 <Login />
                             </Route>
-                            <PrivateRoute exact patch='/dashboard'>
+                            <PrivateRoute exact path='/dashboard'>
+                                <Dashboard />
+                            </PrivateRoute>
+                            <PrivateRoute exact path="/add_task">
+                                <Dashboard />
+                            </PrivateRoute>
+                            <PrivateRoute exact path="/viewtask">
+                                <Dashboard />
+                            </PrivateRoute>
+                            <PrivateRoute exact path='/messages'>
+                                <Dashboard />
+                            </PrivateRoute>
+                            <PrivateRoute exact path='/task_history'>
+                                <Dashboard />
+                            </PrivateRoute>
+                            <PrivateRoute exact path='/payment_history'>
                                 <Dashboard />
                             </PrivateRoute>
 

@@ -189,7 +189,13 @@ export default function EnrollForm() {
                                     *Enter at least six characters
                                 </FormHelperText>
                             </FormControl>
-                            <JobsCheckBox setJobs={setJobs} jobs={jobs} />
+                            <JobsCheckBox
+                                text={
+                                    "Select one or more jobs you can complete"
+                                }
+                                setJobs={setJobs}
+                                jobs={jobs}
+                            />
                             <Stack spacing={5}>
                                 <Button
                                     bg={"blue.400"}

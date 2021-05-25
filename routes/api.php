@@ -1,8 +1,9 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BidController;
 use App\Http\Controllers\SkillController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,5 +26,19 @@ Route::prefix('auth')->group(function () {
 
     Route::middleware('auth:api')->group(function () {
         Route::get('logout', [AuthController::class, 'logout']);
+    });
+});
+Route::prefix('tasks')->group(function () {
+    Route::post('/', [TaskController::class, 'index']);
+
+    Route::middleware('auth:api')->group(function () {
+        Route::get('/mytasks', [TaskController::class, 'myTasks']);
+        Route::post('create', [TaskController::class, 'create']);
+    });
+});
+Route::prefix('bids')->group(function () {
+
+    Route::middleware('auth:api')->group(function () {
+        Route::post('create', [BidController::class, 'create']);
     });
 });

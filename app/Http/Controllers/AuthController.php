@@ -33,6 +33,7 @@ class AuthController extends Controller
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
             'email' => $request->email,
+            'role' => 'VENDOR'
         ]);
 
 

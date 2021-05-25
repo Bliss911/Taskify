@@ -24,13 +24,13 @@ const AuthProvider = ({ children }) => {
             if (err.response) {
                 if (err.response.status === 401 || err.response.data.message === 'Unauthenticated' || err.response.data.message === ' err.response.data.message' === '401 Unauthorized') {
                     localStorage.removeItem('frespTfHc0yj864fjtgSaFfdsaArw35hd4s');
-                    checkAuth()
+                    setIsAuth(false)
                 }
             }
             return Promise.reject(err)
         });
 
-    }, [isAuth])
+    }, [])
 
 
     const handleAuth = (response) => {
@@ -112,7 +112,7 @@ const AuthProvider = ({ children }) => {
             cogoToast.success('Logout successful')
             localStorage.removeItem('frespTfHc0yj864fjtgSaFfdsaArw35hd4s');
 
-            checkAuth()
+            setIsAuth(false)
 
         }).catch(error => {
             if (error.response) {

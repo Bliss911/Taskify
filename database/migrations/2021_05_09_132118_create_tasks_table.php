@@ -15,6 +15,12 @@ class CreateTasksTable extends Migration
     {
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('client')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->string('title');
+            $table->text('description');
+            $table->enum('status', ['PENDING', 'CANCELLED', 'DONE']);
+            $table->string('location');
+            $table->integer('offer');
             $table->timestamps();
         });
     }
