@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BidController;
+use App\Http\Controllers\MessagesController;
 use App\Http\Controllers\SkillController;
 use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
@@ -40,5 +41,13 @@ Route::prefix('bids')->group(function () {
 
     Route::middleware('auth:api')->group(function () {
         Route::post('create', [BidController::class, 'create']);
+        Route::post('delete', [BidController::class, 'delete']);
+    });
+});
+Route::prefix('messages')->group(function () {
+
+    Route::middleware('auth:api')->group(function () {
+        Route::get('/', [MessagesController::class, 'fetch']);
+        Route::post('send', [MessagesController::class, 'create']);
     });
 });

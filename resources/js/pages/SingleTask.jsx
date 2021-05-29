@@ -37,15 +37,66 @@ import cogoToast from "cogo-toast";
 import { useAuth } from "../contexts/AuthProvider";
 
 function SingleTask() {
-    const { task } = useGenCtx();
+    const { task, setTask } = useGenCtx();
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [bid, setBid] = useState(0);
     const [bidSubmitted, setBidSubmitted] = useState(false);
     const [comment, setComment] = useState("");
-
+    const [bidders, setBidders] = useState(
+        task && task.bidders ? task.bidders : []
+    );
     const { user } = useAuth();
     const [loading, setLoading] = useState(false);
 
+    const deleteBid = (data) => {
+        setLoading(true);
+        axios
+            .post("/api/bids/delete", data)
+            .then((response) => {
+                let { data } = response.data;
+                console.log(data);
+                setBidSubmitted(false);
+                setTask(data[0]);
+                const bidvendors = [];
+
+                data[0].bids.forEach((bid) => {
+                    bidvendors.push(bid.vendor.id);
+                });
+                setBidders(bidvendors);
+                cogoToast.success("Bid deleted");
+                setLoading(false);
+            })
+            .catch((error) => {
+                setLoading(false);
+                onClose();
+
+                if (error.response) {
+                    // The request was made and the server responded with a status code that falls out of the range of 2xx
+                    let err = error.response.data;
+                    if (err.errors) {
+                        for (const [key, value] of Object.entries(err.errors)) {
+                            const { hide } = cogoToast.error(value, {
+                                onClick: () => {
+                                    hide();
+                                },
+                            });
+                        }
+                    } else {
+                        cogoToast.error(err.message || "An error occurred");
+                    }
+                } else if (error.request) {
+                    // The request was made but no response was received `error.request` is an instance of XMLHttpRequest in the browser and an instance of http.ClientRequest in node.js
+                    let err = error.request;
+                    cogoToast.error("An error occurred, please try again");
+                } else {
+                    // Something happened in setting up the request that triggered an Error
+                    let err = error.message;
+                    cogoToast.error(
+                        err || "An error occurred, please try again"
+                    );
+                }
+            });
+    };
     const submitBid = () => {
         if (comment == "" || bid == 0) {
             cogoToast.error("Please fill all fields");
@@ -62,6 +113,7 @@ function SingleTask() {
                 .then((response) => {
                     let { data } = response.data;
                     console.log(data);
+                    setTask(data[0]);
                     cogoToast.success("Bid submitted");
                     setBidSubmitted(true);
                     onClose();
@@ -102,10 +154,10 @@ function SingleTask() {
         }
     };
     useEffect(() => {
-        if (task && task.bidders.includes(user.id)) {
+        if (task && bidders.includes(user.id)) {
             setBidSubmitted(true);
         }
-    }, []);
+    }, [task]);
 
     return (
         <>
@@ -349,26 +401,23 @@ function SingleTask() {
                                             {task && "$" + task.offer}
                                         </Text>
                                     </Box>
-                                    {user.role == "VENDOR" && (
-                                        <>
-                                            {" "}
-                                            {!bidSubmitted ? (
-                                                <Button
-                                                    ml={4}
-                                                    mb={4}
-                                                    bg="green.500"
-                                                    color="white"
-                                                    onClick={onOpen}
-                                                >
-                                                    Bid for this task
-                                                </Button>
-                                            ) : (
-                                                <Alert status="success">
-                                                    <AlertIcon />
-                                                    You have submitted a bid
-                                                </Alert>
-                                            )}
-                                        </>
+                                    {user.role == "VENDOR" && !bidSubmitted && (
+                                        <Button
+                                            ml={4}
+                                            mb={4}
+                                            bg="green.500"
+                                            color="white"
+                                            onClick={onOpen}
+                                        >
+                                            Bid for this task
+                                        </Button>
+                                    )}
+
+                                    {user.role == "VENDOR" && bidSubmitted && (
+                                        <Alert status="success">
+                                            <AlertIcon />
+                                            You have submitted a bid
+                                        </Alert>
                                     )}
                                 </Box>
                             </Box>
@@ -425,12 +474,37 @@ function SingleTask() {
                                                             <Text className="afont">
                                                                 {b.comment}
                                                             </Text>
-                                                            <Flex py={3}>
-                                                                <Button colorScheme="red">
-                                                                    Delete Your
-                                                                    Bid
+                                                            {bidSubmitted && (
+                                                                <Flex py={3}>
+                                                                    <Button
+                                                                        onClick={() => {
+                                                                            deleteBid(
+                                                                                {
+                                                                                    bid: b.id,
+                                                                                    task: task.id,
+                                                                                }
+                                                                            );
+                                                                        }}
+                                                                        colorScheme="red"
+                                                                    >
+                                                                        Delete
+                                                                        Your Bid
+                                                                    </Button>
+                                                                </Flex>
+                                                            )}
+                                                            {user.role ==
+                                                                "CLIENT" && (
+                                                                <Button
+                                                                    ml={4}
+                                                                    mb={4}
+                                                                    colorScheme="green"
+                                                                    variant="outline"
+                                                                    bg="green.500"
+                                                                    color="white"
+                                                                >
+                                                                    Negotiate
                                                                 </Button>
-                                                            </Flex>
+                                                            )}
                                                         </AccordionPanel>
                                                     </AccordionItem>
                                                 );

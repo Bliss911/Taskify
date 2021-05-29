@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bid;
+use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -37,6 +38,35 @@ class BidController extends Controller
         ]);
 
         $bid->save();
-        return $this->sendResult('bid created', [], [], true);
+        $task = Task::where('id', $request->task)->with(['skill', 'user', 'bids.vendor'])
+            ->get();
+
+        return $this->sendResult('bid created', $task, [], true);
+    }
+    public function delete(Request $request)
+    {
+
+        $data = $request->all();
+
+        $validator = Validator::make($data, [
+            'bid' => 'required|integer',
+            'task' => 'required|exists:tasks,id'
+
+        ]);
+        if ($validator->fails()) {
+            $status = false;
+            $errors = $validator->errors();
+            $message = "Task submission Failed";
+            return $this->sendResult($message, [], $errors, $status);
+        }
+
+
+
+        Bid::where('id', $request->bid)->where('task', $request->task)->where('vendor', Auth::user()->id)->delete();
+
+        $task = Task::where('id', $request->task)->with(['skill', 'user', 'bids.vendor'])
+            ->get();
+
+        return $this->sendResult('bid deleted', $task, [], true);
     }
 }
