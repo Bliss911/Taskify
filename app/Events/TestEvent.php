@@ -7,13 +7,15 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class TestEvent
+class TestEvent implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-
+    public $message;
+    public $count;
     /**
      * Create a new event instance.
      *
@@ -21,9 +23,9 @@ class TestEvent
      */
     public function __construct()
     {
-        //
+        $this->message =  'hello';
+        $this->count = 1;
     }
-
     /**
      * Get the channels the event should broadcast on.
      *
@@ -31,6 +33,10 @@ class TestEvent
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('channel-name');
+        return new Channel('private-test');
+    }
+    public function broadcastWith()
+    {
+        return ['message' => 'message'];
     }
 }

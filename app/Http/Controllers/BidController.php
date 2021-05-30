@@ -69,4 +69,58 @@ class BidController extends Controller
 
         return $this->sendResult('bid deleted', $task, [], true);
     }
+    public function accept(Request $request)
+    {
+
+        $data = $request->all();
+
+        $validator = Validator::make($data, [
+            'bid' => 'required|integer',
+            'task' => 'required|exists:tasks,id'
+
+        ]);
+        if ($validator->fails()) {
+            $status = false;
+            $errors = $validator->errors();
+            $message = "Task submission Failed";
+            return $this->sendResult($message, [], $errors, $status);
+        }
+
+
+
+        Bid::where('id', $request->bid)->update(['status' => 'ACCEPTED']);
+
+
+        $task = Task::where('id', $request->task)->with(['skill', 'user', 'bids.vendor'])
+            ->get();
+
+        return $this->sendResult('bid accepted', $task, [], true);
+    }
+    public function reject(Request $request)
+    {
+
+        $data = $request->all();
+
+        $validator = Validator::make($data, [
+            'bid' => 'required|integer',
+            'task' => 'required|exists:tasks,id'
+
+        ]);
+        if ($validator->fails()) {
+            $status = false;
+            $errors = $validator->errors();
+            $message = "Task submission Failed";
+            return $this->sendResult($message, [], $errors, $status);
+        }
+
+
+
+        Bid::where('id', $request->bid)->update(['status' => 'CANCELLED']);
+
+
+        $task = Task::where('id', $request->task)->with(['skill', 'user', 'bids.vendor'])
+            ->get();
+
+        return $this->sendResult('bid rejected', $task, [], true);
+    }
 }

@@ -14,5 +14,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 
+Route::view('/', 'welcome');
 Route::view('/{path?}', 'welcome');
 Route::view('/{path?}', 'welcome');
