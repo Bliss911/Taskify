@@ -257,7 +257,7 @@ export default function DashoardHome() {
             fontWeight="bold"
             className="qfont"
           >
-            Recent Tasks
+            {user && user.role === "CLIENT" ? "Recent Tasks" : "Accepted Bids"}
           </Text>
         </Flex>
         <Stack spacing={"4"}>

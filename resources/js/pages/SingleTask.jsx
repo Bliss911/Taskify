@@ -23,6 +23,7 @@ import {
   AccordionItem,
   AccordionButton,
   AccordionPanel,
+  Badge,
   AccordionIcon,
   Textarea,
 } from "@chakra-ui/react";
@@ -46,6 +47,9 @@ function SingleTask() {
   );
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
+  const markAsDone = () => {
+    //todo
+  };
 
   const rejectBid = (data) => {
     setLoading(true);
@@ -246,6 +250,8 @@ function SingleTask() {
     }
   }, [task]);
 
+  const { setRecipient } = useGenCtx();
+
   return (
     <>
       {!task && (
@@ -263,8 +269,8 @@ function SingleTask() {
           </AlertTitle>
           <AlertDescription maxWidth="sm" className="qfont">
             Go back to{" "}
-            <Link to="/tasks">
-              <Button>Feed page</Button>
+            <Link to="/dashboard">
+              <Button>Dashboard</Button>
             </Link>
             and select a task to view
           </AlertDescription>
@@ -338,11 +344,29 @@ function SingleTask() {
                 className="qfont"
                 p={4}
               >
-                <Flex>
-                  <Text as="h4">Posted by : </Text>
-                  <Text as="b" textTransform="capitalize">
-                    {task && task.user.firstname + " " + task.user.lastname}
-                  </Text>
+                <Flex justifyContent="space-between">
+                  <Box>
+                    <Text as="h4">Posted by : </Text>
+                    <Text as="b" textTransform="capitalize">
+                      {task && task.user.firstname + " " + task.user.lastname}
+                    </Text>
+                  </Box>
+                  <Button
+                    mb={4}
+                    size="sm"
+                    colorScheme="green"
+                    variant="outline"
+                    bg="green.500"
+                    _hover={{
+                      bg: "green.500",
+                    }}
+                    onClick={() => {
+                      markAsDone();
+                    }}
+                    color="white"
+                  >
+                    Mark as Done
+                  </Button>
                 </Flex>
                 <Text as="small" textTransform="italic">
                   {task && <ReactTimeAgo date={task.created_at} />}
@@ -496,6 +520,20 @@ function SingleTask() {
                                 <Box flex="1" textAlign="left">
                                   Bid from {" " + b.vendor.firstname} - ${b.bid}
                                 </Box>
+                                <Box flex="1" textAlign="right">
+                                  <Badge
+                                    variant="outline"
+                                    color={
+                                      b.status === "ACCEPTED"
+                                        ? "green"
+                                        : b.status === "CANCELLED"
+                                        ? "red"
+                                        : "yellow"
+                                    }
+                                  >
+                                    {b.status}
+                                  </Badge>
+                                </Box>
                                 <AccordionIcon />
                               </AccordionButton>
                             </h2>
@@ -544,7 +582,6 @@ function SingleTask() {
                                 user.id === task.client && (
                                   <>
                                     <Button
-                                      ml={4}
                                       mb={4}
                                       size="sm"
                                       colorScheme="green"
@@ -553,9 +590,22 @@ function SingleTask() {
                                       _hover={{
                                         bg: "green.500",
                                       }}
+                                      onClick={() => {
+                                        setRecipient(b.vendor);
+                                      }}
                                       color="white"
                                     >
-                                      Negotiate
+                                      <Link
+                                        style={{
+                                          display: "flex",
+                                          width: "100%",
+                                          height: "100%",
+                                          alignItems: "center",
+                                        }}
+                                        to="/messages"
+                                      >
+                                        Negotiate
+                                      </Link>
                                     </Button>
                                     {b.status != "ACCEPTED" && (
                                       <Button

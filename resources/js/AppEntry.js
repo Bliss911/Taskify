@@ -16,78 +16,84 @@ import Signup from './pages/SignUp';
 import PrivateRoute from './helpers/PrivateRoute';
 import Feed from './pages/Feed';
 import Dashboard from './pages/Dashboard';
+import { useLocation } from 'react-router-dom';
 
 
 function App () {
-    const [loading, setLoading] = useState(true)
-    useEffect(() => {
-        setTimeout(() => {
-            setLoading(false)
-        }, 2100)
-    })
-    return (
-        <ChakraProvider theme={theme}>
-            {/* <ColorModeSwitcher /> */}
-            {loading && <PageLoader />}
-            <Navbar />
-            {!loading && <>
-                <Switch>
-                    <Box id='content'
-                        margin="auto"
-                        maxWidth="1348px"
-                        px={8}
+	const [loading, setLoading] = useState(true)
+	const { pathname } = useLocation()
+	useEffect(() => {
+		setTimeout(() => {
+			setLoading(false)
+		}, 2100)
+	})
+	return (
+		<ChakraProvider theme={theme}>
+			{/* <ColorModeSwitcher /> */}
+			{loading && <PageLoader />}
+			<Navbar />
+			{!loading && <>
+				<Switch>
+					<Box id='content'
+						margin="auto"
+						maxWidth="1348px"
+						px={8}
 
-                    >
-                        <Switch>
-                            <Route exact path="/">
-                                <Home />
-                            </Route>
-                            <Route exact path="/how_it_works">
-                                <HowItWorks />
-                            </Route>
-                            <Route exact path="/join">
-                                <Signup />
-                            </Route>
-                            <Route exact path="/enroll">
-                                <Enroll />
-                            </Route>
-                            <Route exact path="/tasks">
-                                <Feed />
-                            </Route>
-                            <Route exact path="/login">
-                                <Login />
-                            </Route>
-                            <PrivateRoute exact path='/dashboard'>
-                                <Dashboard />
-                            </PrivateRoute>
-                            <PrivateRoute exact path="/add_task">
-                                <Dashboard />
-                            </PrivateRoute>
-                            <PrivateRoute exact path="/viewtask">
-                                <Dashboard />
-                            </PrivateRoute>
-                            <PrivateRoute exact path='/messages'>
-                                <Dashboard />
-                            </PrivateRoute>
-                            <PrivateRoute exact path='/task_history'>
-                                <Dashboard />
-                            </PrivateRoute>
-                            <PrivateRoute exact path='/payment_history'>
-                                <Dashboard />
-                            </PrivateRoute>
 
-                            <Route path="*">
-                                <NotFound />
-                            </Route>
-                        </Switch>
-                    </Box>
+					>
+						<Switch>
+							<Route exact path="/">
+								<Home />
+							</Route>
+							<Route exact path="/how_it_works">
+								<HowItWorks />
+							</Route>
+							<Route exact path="/join">
+								<Signup />
+							</Route>
+							<Route exact path="/enroll">
+								<Enroll />
+							</Route>
+							<Route exact path="/tasks">
+								<Feed />
+							</Route>
+							<Route exact path="/login">
+								<Login />
+							</Route>
+							<PrivateRoute exact path='/dashboard'>
+								<Dashboard />
+							</PrivateRoute>
+							<PrivateRoute exact path="/add_task">
+								<Dashboard />
+							</PrivateRoute>
+							<PrivateRoute exact path="/viewtask">
+								<Dashboard />
+							</PrivateRoute>
+							<PrivateRoute exact path='/messages'>
+								<Dashboard />
+							</PrivateRoute>
+							<PrivateRoute exact path='/task_history'>
+								<Dashboard />
+							</PrivateRoute>
+							<PrivateRoute exact path='/payment_history'>
+								<Dashboard />
+							</PrivateRoute>
+							<PrivateRoute exact path='/messages'>
+								<Dashboard />
+							</PrivateRoute>
 
-                </Switch>
-            </>}
+							<Route path="*">
+								<NotFound />
+							</Route>
+						</Switch>
+					</Box>
 
-            <Footer />
-        </ChakraProvider>
-    );
+				</Switch>
+			</>}
+
+			<Footer />
+		</ChakraProvider>
+	);
 
 }
 

@@ -7,10 +7,10 @@ window._ = require('lodash');
  */
 
 try {
-    window.Popper = require('popper.js').default;
-    window.$ = window.jQuery = require('jquery');
+	window.Popper = require('popper.js').default;
+	window.$ = window.jQuery = require('jquery');
 
-    require('bootstrap');
+	require('bootstrap');
 } catch (e) { }
 
 /**
@@ -30,16 +30,32 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
  */
 
 import Echo from 'laravel-echo';
+let token = JSON.parse(
+	localStorage.getItem('frespTfHc0yj864fjtgSaFfdsaArw35hd4s')
+);
+if (token) {
+
+	token = 'Bearer ' + token.split('').reverse().join('');
+}
+console.log(token)
 
 window.Pusher = require('pusher-js');
 
 window.Echo = new Echo({
-    broadcaster: 'pusher',
-    key: process.env.MIX_PUSHER_APP_KEY,
-    cluster: process.env.MIX_PUSHER_APP_CLUSTER,
-    // forceTLS: true,
-    wsHost: window.location.hostname,
-    wsPort: 6001,
-    disableStats: true,
-    enabledTransports: ['ws', 'wss'],
+	broadcaster: 'pusher',
+	key: process.env.MIX_PUSHER_APP_KEY,
+	cluster: process.env.MIX_PUSHER_APP_CLUSTER,
+	// forceTLS: true,
+	wsHost: window.location.hostname,
+
+	auth: {
+		headers: {
+			Authorization: token,
+			Accept: 'application/json'
+		}
+	},
+	wsPort: 6001,
+	disableStats: true,
+	enabledTransports: ['ws', 'wss'],
+
 });

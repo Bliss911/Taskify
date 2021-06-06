@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BidController;
-use App\Http\Controllers\MessagesController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\SkillController;
 use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
@@ -50,7 +50,8 @@ Route::prefix('bids')->group(function () {
 Route::prefix('messages')->group(function () {
 
 	Route::middleware('auth:api')->group(function () {
-		Route::get('/', [MessagesController::class, 'fetch']);
-		Route::post('send', [MessagesController::class, 'create']);
+		Route::get('/', [ChatController::class, 'index']);
+		Route::post('/chat', [ChatController::class, 'all']);
+		Route::post('send', [ChatController::class, 'send']);
 	});
 });
