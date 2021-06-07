@@ -19,14 +19,76 @@ class TaskController extends Controller
 	{
 		if ($request->id) {
 
-			$data = Task::with(['skill', 'user', 'bids.vendor'])->whereHas('skill', function ($query) use ($request) {
+			$data = Task::where('status', 'PENDING')->with(['skill', 'user', 'bids.vendor'])->whereHas('skill', function ($query) use ($request) {
 				$query->where('skill', $request->id);
 			})->orderByDesc('created_at')->get();
 		} else {
 
-			$data = Task::with(['skill', 'user', 'bids.vendor'])->orderByDesc('created_at')->get();
+			$data = Task::where('status', 'PENDING')->with(['skill', 'user', 'bids.vendor'])->orderByDesc('created_at')->get();
 		}
 		return $this->sendResult('tasks fetched', $data, [], true);
+	}
+
+
+
+
+	public function mypendingtasks(Request $request)
+	{
+
+		if (Auth::user()->role == 'CLIENT') {
+
+			$data = Task::where('status', 'PENDING')->where('client', Auth::user()->id)->with(['skill', 'user', 'bids.vendor'])->orderByDesc('created_at')->get();
+
+			return $this->sendResult('tasks fetched', $data, [], true);
+		} else {
+			$user = Auth::user()->id;
+
+			$data = Task::with(['skill', 'user', 'bids.vendor'])->whereHas('bids', function ($query) use ($user) {
+				$query->where('vendor', $user)->where('status', 'PENDING');
+			})->orderByDesc('created_at')->get();
+			return $this->sendResult('tasks fetched', $data, [], true);
+		}
+	}
+
+	public function mycompletedtasks(Request $request)
+	{
+
+		if (Auth::user()->role == 'CLIENT') {
+
+			$data = Task::where('status', 'COMPLETED')->where('client', Auth::user()->id)->with(['skill', 'user', 'bids.vendor'])->orderByDesc('created_at')->get();
+
+			return $this->sendResult('tasks fetched', $data, [], true);
+		} else {
+			$user = Auth::user()->id;
+
+			$data = Task::with(['skill', 'user', 'bids.vendor'])->whereHas('bids', function ($query) use ($user) {
+				$query->where('vendor', $user)->where('status', 'ACCEPTED');
+			})->orderByDesc('created_at')->get();
+			return $this->sendResult('tasks fetched', $data, [], true);
+		}
+	}
+
+
+
+
+
+
+	public function mycancelledtasks(Request $request)
+	{
+
+		if (Auth::user()->role == 'CLIENT') {
+
+			$data = Task::where('status', 'CANCELLED')->where('client', Auth::user()->id)->with(['skill', 'user', 'bids.vendor'])->orderByDesc('created_at')->get();
+
+			return $this->sendResult('tasks fetched', $data, [], true);
+		} else {
+			$user = Auth::user()->id;
+
+			$data = Task::with(['skill', 'user', 'bids.vendor'])->whereHas('bids', function ($query) use ($user) {
+				$query->where('vendor', $user)->where('status', 'CANCELLED');
+			})->orderByDesc('created_at')->get();
+			return $this->sendResult('tasks fetched', $data, [], true);
+		}
 	}
 
 
@@ -98,58 +160,48 @@ class TaskController extends Controller
 		}
 	}
 
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @param  \Illuminate\Http\Request  $request
-	 * @return \Illuminate\Http\Response
-	 */
-	public function store(Request $request)
+	public function done(Request $request)
 	{
-	}
+		$data = $request->all();
 
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  \App\Models\Task  $task
-	 * @return \Illuminate\Http\Response
-	 */
-	public function show(Task $task)
-	{
-		//
-	}
+		$validator = Validator::make($data, [
+			'task' => 'required|exists:tasks,id'
 
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  \App\Models\Task  $task
-	 * @return \Illuminate\Http\Response
-	 */
-	public function edit(Task $task)
-	{
-		//
-	}
+		]);
+		if ($validator->fails()) {
+			$status = false;
+			$errors = $validator->errors();
+			$message = "Task submission Failed";
+			return $this->sendResult($message, [], $errors, $status);
+		}
 
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  \Illuminate\Http\Request  $request
-	 * @param  \App\Models\Task  $task
-	 * @return \Illuminate\Http\Response
-	 */
-	public function update(Request $request, Task $task)
-	{
-		//
-	}
+		Task::where('id', $request->task)->where('client', Auth::user()->id)->update(['status' => 'DONE']);
 
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  \App\Models\Task  $task
-	 * @return \Illuminate\Http\Response
-	 */
-	public function destroy(Task $task)
+		$task = Task::where('id', $request->task)->with(['skill', 'user', 'bids.vendor'])
+			->get();
+
+		return $this->sendResult('Task completed', $task, [], true);
+	}
+	public function cancel(Request $request)
 	{
-		//
+		$data = $request->all();
+
+		$validator = Validator::make($data, [
+			'task' => 'required|exists:tasks,id'
+
+		]);
+		if ($validator->fails()) {
+			$status = false;
+			$errors = $validator->errors();
+			$message = "Task submission Failed";
+			return $this->sendResult($message, [], $errors, $status);
+		}
+
+		Task::where('id', $request->task)->where('client', Auth::user()->id)->update(['status' => 'CANCELLED']);
+
+		$task = Task::where('id', $request->task)->with(['skill', 'user', 'bids.vendor'])
+			->get();
+
+		return $this->sendResult('Task cancelled', $task, [], true);
 	}
 }

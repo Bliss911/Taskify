@@ -187,7 +187,7 @@ export default function DashoardHome() {
             <FaCheckDouble />
           </Box>
           <Text as="h4" width="126px" textAlign="center" className="qfont">
-            {user.role == "CLIENT" ? "Tasks Rejected" : "Rejected Bids"}
+            {user.role == "CLIENT" ? "Tasks Cancelled" : "Rejected Bids"}
           </Text>
           <Text fontWeight="bold" as="h1" className="qfont">
             {dashLoading && (

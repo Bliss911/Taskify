@@ -52,7 +52,7 @@ export default function TaskLinkBar({ s }) {
           setTask({ ...s, bidders });
         }}
       >
-        {bidders.includes(user.id) && (
+        {s.status !== 'DONE' && bidders.includes(user.id) && (
           <Badge
             bg="green.500"
             color="white"
@@ -61,6 +61,28 @@ export default function TaskLinkBar({ s }) {
             right="0"
           >
             You bid for this.
+          </Badge>
+        )}
+        {s.status == 'DONE' && (
+          <Badge
+            bg="green.500"
+            color="white"
+            position="absolute"
+            top="0"
+            right="0"
+          >
+            COMPLETED
+          </Badge>
+        )}
+        {s.status == 'CANCELLED' && (
+          <Badge
+            bg="red.800"
+            color="white"
+            position="absolute"
+            top="0"
+            right="0"
+          >
+            CANCELLED
           </Badge>
         )}
         <Stack spacing={6}>

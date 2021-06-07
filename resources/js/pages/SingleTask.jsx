@@ -47,10 +47,101 @@ function SingleTask() {
   );
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
-  const markAsDone = () => {
-    //todo
-  };
 
+  const cancelTask = (data) => {
+    setLoading(true);
+    axios
+      .post("/api/tasks/cancel", data)
+      .then((response) => {
+        let { data } = response.data;
+        console.log(data);
+        setBidSubmitted(false);
+        setTask(data[0]);
+        const bidvendors = [];
+
+        data[0].bids.forEach((bid) => {
+          bidvendors.push(bid.vendor.id);
+        });
+        setBidders(bidvendors);
+        cogoToast.success("CANCELLED!!");
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        onClose();
+
+        if (error.response) {
+          // The request was made and the server responded with a status code that falls out of the range of 2xx
+          let err = error.response.data;
+          if (err.errors) {
+            for (const [key, value] of Object.entries(err.errors)) {
+              const { hide } = cogoToast.error(value, {
+                onClick: () => {
+                  hide();
+                },
+              });
+            }
+          } else {
+            cogoToast.error(err.message || "An error occurred");
+          }
+        } else if (error.request) {
+          // The request was made but no response was received `error.request` is an instance of XMLHttpRequest in the browser and an instance of http.ClientRequest in node.js
+          let err = error.request;
+          cogoToast.error("An error occurred, please try again");
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          let err = error.message;
+          cogoToast.error(err || "An error occurred, please try again");
+        }
+      });
+  };
+  const markAsDone = (data) => {
+    setLoading(true);
+    axios
+      .post("/api/tasks/done", data)
+      .then((response) => {
+        let { data } = response.data;
+        console.log(data);
+        setBidSubmitted(false);
+        setTask(data[0]);
+        const bidvendors = [];
+
+        data[0].bids.forEach((bid) => {
+          bidvendors.push(bid.vendor.id);
+        });
+        setBidders(bidvendors);
+        cogoToast.success("Done!");
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        onClose();
+
+        if (error.response) {
+          // The request was made and the server responded with a status code that falls out of the range of 2xx
+          let err = error.response.data;
+          if (err.errors) {
+            for (const [key, value] of Object.entries(err.errors)) {
+              const { hide } = cogoToast.error(value, {
+                onClick: () => {
+                  hide();
+                },
+              });
+            }
+          } else {
+            cogoToast.error(err.message || "An error occurred");
+          }
+        } else if (error.request) {
+          // The request was made but no response was received `error.request` is an instance of XMLHttpRequest in the browser and an instance of http.ClientRequest in node.js
+          let err = error.request;
+          cogoToast.error("An error occurred, please try again");
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          let err = error.message;
+          cogoToast.error(err || "An error occurred, please try again");
+        }
+      });
+  };
   const rejectBid = (data) => {
     setLoading(true);
     axios
@@ -351,22 +442,69 @@ function SingleTask() {
                       {task && task.user.firstname + " " + task.user.lastname}
                     </Text>
                   </Box>
-                  <Button
+									<>
+         {task.client == user.id && task.status == 'PENDING' &&  <Button
                     mb={4}
                     size="sm"
                     colorScheme="green"
                     variant="outline"
+										ml='auto'
                     bg="green.500"
                     _hover={{
                       bg: "green.500",
                     }}
                     onClick={() => {
-                      markAsDone();
+                      markAsDone({task: task.id});
                     }}
                     color="white"
                   >
                     Mark as Done
-                  </Button>
+                  </Button>}
+         {task.client == user.id && task.status == 'PENDING' &&  <Button
+                    mb={4}
+                    size="sm"
+                    colorScheme="red"
+                    variant="outline"
+                    bg="red.700"
+                    _hover={{
+                      bg: "red.700",
+                    }}
+                    onClick={() => {
+                      cancelTask({task: task.id});
+                    }}
+                    color="white"
+                  >
+                    Cancel Task
+                  </Button>}
+         {task.status == 'DONE' &&  <Button
+                    mb={4}
+                    size="sm"
+                    colorScheme="green"
+                    variant="outline"
+										 _hover={{
+                      bg: "green.500",
+                    }}
+                    bg="green.500"
+                   disabled
+                    color="white"
+                  >
+                  COMPLETED
+                  </Button>}
+         {task.status == 'CANCELLED' &&  <Button
+                    mb={4}
+                    size="sm"
+                    colorScheme="red"
+                    variant="outline"
+										 _hover={{
+                      bg: "red.700",
+                    }}
+                    bg="red.700"
+                   disabled
+                    color="white"
+                  >
+                  CANCELLED
+                  </Button>}
+									</>
                 </Flex>
                 <Text as="small" textTransform="italic">
                   {task && <ReactTimeAgo date={task.created_at} />}
@@ -473,7 +611,7 @@ function SingleTask() {
                       {task && "$" + task.offer}
                     </Text>
                   </Box>
-                  {user.role == "VENDOR" && !bidSubmitted && (
+                  {user.role == "VENDOR" &&task.status !== 'DONE' && task.status !== 'CANCELLED'	 && !bidSubmitted && (
                     <Button
                       ml={4}
                       mb={4}
@@ -562,6 +700,9 @@ function SingleTask() {
                               <Text className="afont" mb="20px" mt="10px">
                                 {b.comment}
                               </Text>
+
+														{task.status !== 'DONE' && task.status !== 'CANCELLED'	&&<>
+															{/* delete bid button */}
                               {bidSubmitted && (
                                 <Flex py={3}>
                                   <Button
@@ -578,6 +719,7 @@ function SingleTask() {
                                   </Button>
                                 </Flex>
                               )}
+															{/* buttons for client */}
                               {user.role == "CLIENT" &&
                                 user.id === task.client && (
                                   <>
@@ -607,6 +749,7 @@ function SingleTask() {
                                         Negotiate
                                       </Link>
                                     </Button>
+																		{/* accept bidd button */}
                                     {b.status != "ACCEPTED" && (
                                       <Button
                                         ml={4}
@@ -653,6 +796,7 @@ function SingleTask() {
                                     )}
                                   </>
                                 )}
+																		</>}
                             </AccordionPanel>
                           </AccordionItem>
                         );

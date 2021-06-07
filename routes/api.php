@@ -36,6 +36,11 @@ Route::prefix('tasks')->group(function () {
 	Route::middleware('auth:api')->group(function () {
 		Route::get('/mytasks', [TaskController::class, 'myTasks']);
 		Route::post('create', [TaskController::class, 'create']);
+		Route::post('done', [TaskController::class, 'done']);
+		Route::post('cancel', [TaskController::class, 'cancel']);
+		Route::get('mypendingtasks', [TaskController::class, 'mypendingtasks']);
+		Route::get('mycompletedtasks', [TaskController::class, 'mycompletedtasks']);
+		Route::get('mycancelledtasks', [TaskController::class, 'mycancelledtasks']);
 	});
 });
 Route::prefix('bids')->group(function () {

@@ -142,7 +142,7 @@ class AuthController extends Controller
 			return $this->sendResult('fetched', ['pending_bids' => $pending, 'cancelled_bids' => $cancelled, 'accepted_bids' => $accepted], [], true);
 		} else if (Auth::user()->role == 'CLIENT') {
 			$pending = Task::where('status', 'PENDING')->where('client', Auth::user()->id)->count();
-			$accepted = Task::where('status', 'ACCEPTED')->where('client', Auth::user()->id)->count();
+			$accepted = Task::where('status', 'DONE')->where('client', Auth::user()->id)->count();
 			$cancelled = Task::where('status', 'CANCELLED')->where('client', Auth::user()->id)->count();
 			return $this->sendResult('fetched', ['pending_tasks' => $pending, 'cancelled_tasks' => $cancelled, 'accepted_tasks' => $accepted], [], true);
 		}

@@ -32,6 +32,7 @@ import AuthBanner from "../components/Auth/AuthBanner";
 import SingleTask from "./SingleTask";
 import Messages from "./Messages";
 import { useGenCtx } from "../contexts/GeneralProvider";
+import History from "./History";
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(false);
@@ -306,8 +307,13 @@ export default function Dashboard() {
                 <Route exact path="/messages">
                   <Messages showUsers={showUsers} setShowUsers={setShowUsers} />
                 </Route>
-                <Route exact path="/payment_history"></Route>
-                <Route exact path="/task_history"></Route>
+                <Route exact path="/payment_history">
+
+								</Route>
+                <Route exact path="/task_history">
+<History/>
+
+								</Route>
               </Switch>
             </SlideFade>
           </Box>
