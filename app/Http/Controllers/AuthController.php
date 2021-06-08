@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Bid;
 use App\Models\Task;
 use App\Models\User;
+use App\Models\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -42,6 +43,11 @@ class AuthController extends Controller
 		try {
 			DB::beginTransaction();
 			$user->save();
+			$wallet = new Wallet();
+			$wallet->amount = 0;
+			$wallet->user = $user->id;
+
+			$wallet->save();
 			$jobs = $request->jobs;
 
 			$jobsToDB = [];
@@ -84,8 +90,14 @@ class AuthController extends Controller
 			'email' => $request->email,
 		]);
 
+
 		try {
 			$user->save();
+			$wallet = new Wallet();
+			$wallet->amount = 0;
+			$wallet->user = $user->id;
+
+			$wallet->save();
 
 
 			return $this->sendResult('Registration Successful', [], [], true);
@@ -135,16 +147,17 @@ class AuthController extends Controller
 
 	public function dashboard()
 	{
+		$wallet = Wallet::where('user', Auth::user()->id)->first();
 		if (Auth::user()->role == 'VENDOR') {
 			$pending = Bid::where('status', 'PENDING')->where('vendor', Auth::user()->id)->count();
 			$accepted = Bid::where('status', 'ACCEPTED')->where('vendor', Auth::user()->id)->count();
 			$cancelled = Bid::where('status', 'CANCELLED')->where('vendor', Auth::user()->id)->count();
-			return $this->sendResult('fetched', ['pending_bids' => $pending, 'cancelled_bids' => $cancelled, 'accepted_bids' => $accepted], [], true);
+			return $this->sendResult('fetched', ['wallet' => $wallet, 'pending_bids' => $pending, 'cancelled_bids' => $cancelled, 'accepted_bids' => $accepted], [], true);
 		} else if (Auth::user()->role == 'CLIENT') {
 			$pending = Task::where('status', 'PENDING')->where('client', Auth::user()->id)->count();
 			$accepted = Task::where('status', 'DONE')->where('client', Auth::user()->id)->count();
 			$cancelled = Task::where('status', 'CANCELLED')->where('client', Auth::user()->id)->count();
-			return $this->sendResult('fetched', ['pending_tasks' => $pending, 'cancelled_tasks' => $cancelled, 'accepted_tasks' => $accepted], [], true);
+			return $this->sendResult('fetched', ['wallet' => $wallet, 'pending_tasks' => $pending, 'cancelled_tasks' => $cancelled, 'accepted_tasks' => $accepted], [], true);
 		}
 	}
 }

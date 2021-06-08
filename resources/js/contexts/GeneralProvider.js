@@ -1,9 +1,8 @@
 import React, { useState, useContext, useEffect } from 'react'
-import cogoToast from 'cogo-toast'
-import jwt_decode from 'jwt-decode'
-import setAuthToken from '../setAuthToken';
 import axios from 'axios';
 
+import cogoToast from "cogo-toast";
+import { useAuth } from './AuthProvider';
 
 
 const GeneralContext = React.createContext()
@@ -13,6 +12,7 @@ export function useGenCtx () {
 }
 
 const GeneralProvider = ({ children }) => {
+	const { user } = useAuth()
 	const [task, setTask] = useState(null)
 	const [recipient, setRecipient] = useState(null)
 	const [msgs, setmsgs] = useState([])
@@ -38,6 +38,16 @@ const GeneralProvider = ({ children }) => {
 		if (chat == null) return;
 		chat.scrollTop = chat.scrollHeight;
 	};
+
+	useEffect(() => {
+		Echo.private("chat." + user.id).listen(".MessageSent", (e) => {
+			cogoToast.info("New message from " + e.user.firstname, {
+				position: "bottom-right",
+			});
+			setmsgs(e.message.messages);
+			scrollToBottom();
+		});
+	}, [user])
 
 
 	return (

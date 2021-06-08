@@ -5,6 +5,7 @@ use App\Http\Controllers\BidController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\SkillController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\WalletController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -58,5 +59,11 @@ Route::prefix('messages')->group(function () {
 		Route::get('/', [ChatController::class, 'index']);
 		Route::post('/chat', [ChatController::class, 'all']);
 		Route::post('send', [ChatController::class, 'send']);
+	});
+});
+Route::prefix('wallet')->group(function () {
+
+	Route::middleware('auth:api')->group(function () {
+		Route::post('/add', [WalletController::class, 'add']);
 	});
 });

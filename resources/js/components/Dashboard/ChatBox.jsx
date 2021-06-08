@@ -53,14 +53,6 @@ export default function ChatBox() {
   };
 
   useEffect(() => {
-    Echo.private("chat." + user.id).listen(".MessageSent", (e) => {
-      cogoToast.info("New message from " + e.user.firstname, {
-        position: "bottom-right",
-      });
-      setmsgs(e.message.messages);
-      scrollToBottom();
-    });
-
     scrollToBottom();
   }, []);
 

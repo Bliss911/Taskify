@@ -8,7 +8,7 @@ import {
   Badge,
   HStack,
 } from "@chakra-ui/layout";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   useBreakpointValue,
   Button,
@@ -18,13 +18,21 @@ import {
   ListIcon,
   Avatar,
   useDisclosure,
+  Drawer,
+  DrawerBody,
+  Input,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
 } from "@chakra-ui/react";
 import ReactTimeAgo from "react-time-ago";
 import { MdAddBox, MdMenu } from "react-icons/md";
 import { useAuth } from "../contexts/AuthProvider";
 import { Redirect, Link, Route, Switch, useLocation } from "react-router-dom";
 import { TiMessages } from "react-icons/ti";
-import { FaHistory, FaHome, FaUser } from "react-icons/fa";
+import { FaHistory, FaHome, FaUser, FaWallet } from "react-icons/fa";
 import { GiPayMoney } from "react-icons/gi";
 import DashboardHome from "../components/Dashboard/DashboardHome";
 import AddNewTask from "../components/Dashboard/AddNewTask";
@@ -40,6 +48,10 @@ export default function Dashboard() {
   const [showUsers, setShowUsers] = useState(false);
   const { user, isAuth } = useAuth();
   const { pathname } = useLocation();
+  const [dashLoading, setDashLoading] = useState(true);
+  const [dashError, setDashErr] = useState(null);
+  const [dash, setDash] = useState(null);
+  const [amount, setAmt] = useState(0);
 
   // if (!isAuth) return <Redirect to="/login" />;
   const WIDTH = useBreakpointValue({
@@ -68,6 +80,38 @@ export default function Dashboard() {
     md: "none",
   });
   const { recipient } = useGenCtx();
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const fetchDashboard = async () => {
+    setDashErr(null);
+    try {
+      const dt = await axios.get("/api/auth/dashboard");
+      const { data } = dt.data;
+      console.log(data);
+      setDash(data);
+      setDashLoading(false);
+      setAmt(0);
+    } catch (error) {
+      setDashErr(error.message);
+      setDashLoading(false);
+    }
+  };
+  const addMoney = async (id) => {
+    setDashLoading(true);
+    try {
+      const dt = await axios.post("/api/wallet/add", { id, amount: amount });
+      const { data } = dt.data;
+      console.log(data);
+      setDash(data);
+      setDashLoading(false);
+    } catch (error) {
+      setDashErr(error.message);
+      setDashLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchDashboard();
+  }, []);
   return (
     <Box position="relative">
       {!isAuth && <AuthBanner />}
@@ -253,6 +297,18 @@ export default function Dashboard() {
                 recipient.firstname}
             </Text>
             <HStack>
+              <Button
+                leftIcon={<FaWallet />}
+                className="qfont"
+                colorScheme="green"
+                variant="outline"
+                onClick={onOpen}
+                as="span"
+                color="#0ca25f"
+              >
+                Wallet
+              </Button>
+
               {user.role == "CLIENT" && (
                 <Link to="/add_task">
                   <Button size="md" className="qfont" color="green.500">
@@ -296,7 +352,14 @@ export default function Dashboard() {
             <SlideFade dir="left" in>
               <Switch>
                 <Route exact path="/dashboard">
-                  <DashboardHome />
+                  <DashboardHome
+                    setDash={setDash}
+                    setDashLoading={setDashLoading}
+                    dashLoading={dashLoading}
+                    setDashErr={setDashErr}
+                    dashError={dashError}
+                    dash={dash}
+                  />
                 </Route>
                 <Route exact path="/add_task">
                   <AddNewTask />
@@ -307,18 +370,53 @@ export default function Dashboard() {
                 <Route exact path="/messages">
                   <Messages showUsers={showUsers} setShowUsers={setShowUsers} />
                 </Route>
-                <Route exact path="/payment_history">
-
-								</Route>
+                <Route exact path="/payment_history"></Route>
                 <Route exact path="/task_history">
-<History/>
-
-								</Route>
+                  <History />
+                </Route>
               </Switch>
             </SlideFade>
           </Box>
         </Box>
       </Flex>
+      <Drawer placement="left" size="sm" onClose={onClose} isOpen={isOpen}>
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerCloseButton />
+          <DrawerHeader borderBottomWidth="1px" className="qfont">
+            Wallet : ${dash && dash.wallet.amount}
+          </DrawerHeader>
+          <DrawerBody className="qfont">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                addMoney(dash && dash.wallet.id);
+              }}
+            >
+              Fund Your Wallet
+              <Input
+                required
+                min={1}
+                type="number"
+                placeholder="Type here..."
+                value={amount}
+                onChange={(e) => {
+                  setAmt(e.target.value);
+                }}
+              />
+              <Button
+                type="submit"
+                isLoading={dashLoading}
+                loadingText="Submitting"
+                colorScheme="green"
+                variant="outline"
+              >
+                Submit
+              </Button>
+            </form>
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
     </Box>
   );
 }

@@ -12,14 +12,14 @@ import GeneralProvider from "./contexts/GeneralProvider";
 TimeAgo.addDefaultLocale(en)
 
 ReactDOM.render(
-    <BrowserRouter>
-        <AuthProvider>
-            <GeneralProvider>
+	<BrowserRouter>
+		<AuthProvider>
+			<GeneralProvider>
 
-                <App />
-            </GeneralProvider>
-        </AuthProvider>
-    </BrowserRouter>,
-    document.getElementById("app")
+				<App />
+			</GeneralProvider>
+		</AuthProvider>
+	</BrowserRouter>,
+	document.getElementById("app")
 );
 

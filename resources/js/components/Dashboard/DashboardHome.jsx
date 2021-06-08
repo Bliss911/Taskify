@@ -17,13 +17,17 @@ import TaskLinkBar from "../TasksFeed/TaskLinkBar";
 import ErrorBanner from "../ErrorBanner";
 import { useAuth } from "../../contexts/AuthProvider";
 
-export default function DashoardHome() {
+export default function DashoardHome({
+  setDash,
+  setDashLoading,
+  dashLoading,
+  setDashErr,
+  dashError,
+  dash,
+}) {
   const [loading, setLoading] = useState(false);
-  const [dashLoading, setDashLoading] = useState(true);
   const [tasks, setTasks] = useState([]);
   const [error, setErr] = useState(null);
-  const [dashError, setDashErr] = useState(null);
-  const [dash, setDash] = useState(null);
 
   const { user } = useAuth();
 
@@ -42,23 +46,8 @@ export default function DashoardHome() {
     }
   };
 
-  const fetchDashboard = async () => {
-    setDashErr(null);
-    try {
-      const dt = await axios.get("/api/auth/dashboard");
-      const { data } = dt.data;
-      console.log(data);
-      setDash(data);
-      setDashLoading(false);
-    } catch (error) {
-      setDashErr(error.message);
-      setDashLoading(false);
-    }
-  };
-
   useEffect(() => {
     fetchAllTasks();
-    fetchDashboard();
   }, []);
   return (
     <>
@@ -110,9 +99,11 @@ export default function DashoardHome() {
               </Box>
             )}
             {!dashLoading && user.role == "CLIENT" && (
-              <>{dash.accepted_tasks}</>
+              <>{dash && dash.accepted_tasks}</>
             )}
-            {!dashLoading && user.role == "VENDOR" && <>{dash.accepted_bids}</>}
+            {!dashLoading && user.role == "VENDOR" && (
+              <>{dash && dash.accepted_bids}</>
+            )}
           </Text>
         </Flex>
 
@@ -153,8 +144,12 @@ export default function DashoardHome() {
                 loading...
               </Box>
             )}
-            {!dashLoading && user.role == "CLIENT" && <>{dash.pending_tasks}</>}
-            {!dashLoading && user.role == "VENDOR" && <>{dash.pending_bids}</>}
+            {!dashLoading && user.role == "CLIENT" && (
+              <>{dash && dash.pending_tasks}</>
+            )}
+            {!dashLoading && user.role == "VENDOR" && (
+              <>{dash && dash.pending_bids}</>
+            )}
           </Text>
         </Flex>
 
@@ -197,10 +192,10 @@ export default function DashoardHome() {
             )}
 
             {!dashLoading && user.role == "CLIENT" && (
-              <>{dash.cancelled_tasks}</>
+              <>{dash && dash.cancelled_tasks}</>
             )}
             {!dashLoading && user.role == "VENDOR" && (
-              <>{dash.cancelled_bids}</>
+              <>{dash && dash.cancelled_bids}</>
             )}
           </Text>
         </Flex>
@@ -236,7 +231,7 @@ export default function DashoardHome() {
             Wallet Balance
           </Text>
           <Text fontWeight="bold" as="h1" className="qfont">
-            $780
+            ${dash && dash.wallet.amount}
           </Text>
         </Flex>
       </Flex>
