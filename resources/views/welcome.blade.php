@@ -6,10 +6,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title>Taskify</title>
+        <link rel="stylesheet" href="/css/App.css">
         <link rel="stylesheet" href="/css/fonts.css">
         <link rel="stylesheet" href="/css/loader.css">
         <link rel="stylesheet" href="/css/notfound.css">
-        <link rel="stylesheet" href="/css/App.css">
 
 
     </head>

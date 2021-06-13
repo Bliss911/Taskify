@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Payment;
 use App\Models\Task;
+use App\Models\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+
+use function PHPSTORM_META\type;
 
 class TaskController extends Controller
 {
@@ -175,13 +179,35 @@ class TaskController extends Controller
 			return $this->sendResult($message, [], $errors, $status);
 		}
 
-		Task::where('id', $request->task)->where('client', Auth::user()->id)->update(['status' => 'DONE']);
 
-		$task = Task::where('id', $request->task)->with(['skill', 'user', 'bids.vendor'])
-			->get();
 
-		return $this->sendResult('Task completed', $task, [], true);
+		$task = Task::where('id', $request->task)->with(['bids.vendor'])->whereHas('bids', function ($query) use ($request) {
+			$query->where('status', 'ACCEPTED');
+		})->first();
+
+		$bid = $task->bids[0]->bid;
+		$vendor = $task->bids[0]->vendor;
+		$walletClient = Wallet::where('user', Auth::user()->id)->first();
+		$walletVendor = Wallet::where('user', $vendor)->first();
+
+		if ($walletClient->amount < $bid) {
+			return $this->sendResult('Balance insufficient', [], ['error' => 'Wallet balance Insuficient'], false);
+		} else {
+
+			$walletClient->decrement('amount', $bid);
+			$walletVendor->increment('amount', $bid);
+			//todo : make payment entry
+			Payment::create(['sender' => $walletClient->id, 'reciever' => $walletVendor->id, 'amount' => $bid, 'type' => 'TRANSFER']);
+			Task::where('id', $request->task)->where('client', Auth::user()->id)->update(['status' => 'DONE']);
+
+			$task = Task::where('id', $request->task)->with(['skill', 'user', 'bids.vendor'])
+				->get();
+
+			return $this->sendResult('Task completed', $task, [], true);
+		}
 	}
+
+
 	public function cancel(Request $request)
 	{
 		$data = $request->all();

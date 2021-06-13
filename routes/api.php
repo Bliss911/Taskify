@@ -65,5 +65,6 @@ Route::prefix('wallet')->group(function () {
 
 	Route::middleware('auth:api')->group(function () {
 		Route::post('/add', [WalletController::class, 'add']);
+		Route::get('/payments', [WalletController::class, 'payments']);
 	});
 });

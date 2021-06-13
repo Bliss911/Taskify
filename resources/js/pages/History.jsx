@@ -6,13 +6,37 @@ import {
   Text,
   Stack,
   Spinner,
-	Tabs,Tab, TabList, TabPanels, TabPanel,
+  Tabs,
+  Tab,
+  TabList,
+  TabPanels,
+  TabPanel,
   SlideFade,
   Alert,
   AlertIcon,
   AlertTitle,
   AlertDescription,
 } from "@chakra-ui/react";
+function Alerto() {
+  return (
+    <Alert
+      status="info"
+      variant="subtle"
+      flexDirection="column"
+      justifyContent="center"
+      textAlign="center"
+      minHeight="220px"
+    >
+      <AlertIcon size="40px" mr={0} />
+      <AlertTitle mt={4} mb={1} fontSize="lg" className="qfont">
+        Oops! Looks empty here!
+      </AlertTitle>
+      <AlertDescription maxWidth="sm" className="qfont">
+        You have no tasks in this category
+      </AlertDescription>
+    </Alert>
+  );
+}
 import { FaCheckDouble, FaDollarSign } from "react-icons/fa";
 import TaskLinkBar from "../components/TasksFeed/TaskLinkBar";
 import ErrorBanner from "../components/ErrorBanner";
@@ -22,45 +46,44 @@ export default function History() {
   function DataTabs({ data }) {
     return (
       <Tabs isManual isLazy>
-        <TabList className='qfont'>
+        <TabList className="qfont">
           {data.map((tab, index) => (
             <Tab key={index}>{tab.label}</Tab>
           ))}
         </TabList>
         <TabPanels>
           {data.map((tab, index) => (
-            <TabPanel p={4} key={index} className='afont'>
-              {tab.component&&tab.component}
+            <TabPanel p={4} key={index} className="afont">
+              {tab.component && tab.component}
             </TabPanel>
           ))}
         </TabPanels>
       </Tabs>
-    )
+    );
   }
 
   // 2. Create an array of data
   const tabData = [
     {
       label: "Pending",
-			component: <PendingTasks/>
+      component: <PendingTasks />,
     },
     {
       label: "Completed",
-			component: <CompletedTasks/>
+      component: <CompletedTasks />,
     },
     {
       label: "Cancelled",
-			component: <CancelledTasks/>
+      component: <CancelledTasks />,
     },
-  ]
+  ];
 
   // 3. Pass the props and chill!
-  return <DataTabs data={tabData} />
+  return <DataTabs data={tabData} />;
 }
 
-
-const PendingTasks = ()=>{
-	  const [loading, setLoading] = useState(false);
+const PendingTasks = () => {
+  const [loading, setLoading] = useState(false);
   const [tasks, setTasks] = useState([]);
   const [error, setErr] = useState(null);
 
@@ -84,50 +107,34 @@ const PendingTasks = ()=>{
   useEffect(() => {
     fetchAllTasks();
   }, []);
-	return( <Box>
-             <Stack spacing={"4"}>
-          {loading && !error && <Spinner size="lg" colorScheme="green.500" />}
-          {!loading && !error && (
-            <>
-              {tasks.map((s, i) => {
-                return (
-                  <SlideFade key={i} dir="left" in>
-                    <TaskLinkBar s={s} />
-                  </SlideFade>
-                );
-              })}
-            </>
-          )}
-          {!loading && error && (
-            <>
-              <ErrorBanner message={error.message} retry={fetchAllTasks} />
-            </>
-          )}
-          {tasks.length == 0 && (
-            <Alert
-              status="info"
-              variant="subtle"
-              flexDirection="column"
-              justifyContent="center"
-              textAlign="center"
-              minHeight="220px"
-            >
-              <AlertIcon size="40px" mr={0} />
-              <AlertTitle mt={4} mb={1} fontSize="lg" className="qfont">
-                Oops! Looks empty here!
-              </AlertTitle>
-              <AlertDescription maxWidth="sm" className="qfont">
-                You have no tasks at the moment
-              </AlertDescription>
-            </Alert>
-          )}
-        </Stack>
-      </Box>)
-}
+  return (
+    <Box>
+      <Stack spacing={"4"}>
+        {loading && !error && <Spinner size="lg" colorScheme="green.500" />}
+        {!loading && !error && (
+          <>
+            {tasks.map((s, i) => {
+              return (
+                <SlideFade key={i} dir="left" in>
+                  <TaskLinkBar s={s} />
+                </SlideFade>
+              );
+            })}
+          </>
+        )}
+        {!loading && error && (
+          <>
+            <ErrorBanner message={error.message} retry={fetchAllTasks} />
+          </>
+        )}
+        {tasks.length == 0 && <Alerto />}
+      </Stack>
+    </Box>
+  );
+};
 
-
-const CompletedTasks = ()=>{
-	  const [loading, setLoading] = useState(false);
+const CompletedTasks = () => {
+  const [loading, setLoading] = useState(false);
   const [tasks, setTasks] = useState([]);
   const [error, setErr] = useState(null);
 
@@ -151,50 +158,34 @@ const CompletedTasks = ()=>{
   useEffect(() => {
     fetchAllTasks();
   }, []);
-	return( <Box>
-             <Stack spacing={"4"}>
-          {loading && !error && <Spinner size="lg" colorScheme="green.500" />}
-          {!loading && !error && (
-            <>
-              {tasks.map((s, i) => {
-                return (
-                  <SlideFade key={i} dir="left" in>
-                    <TaskLinkBar s={s} />
-                  </SlideFade>
-                );
-              })}
-            </>
-          )}
-          {!loading && error && (
-            <>
-              <ErrorBanner message={error.message} retry={fetchAllTasks} />
-            </>
-          )}
-          {tasks.length == 0 && (
-            <Alert
-              status="info"
-              variant="subtle"
-              flexDirection="column"
-              justifyContent="center"
-              textAlign="center"
-              minHeight="220px"
-            >
-              <AlertIcon size="40px" mr={0} />
-              <AlertTitle mt={4} mb={1} fontSize="lg" className="qfont">
-                Oops! Looks empty here!
-              </AlertTitle>
-              <AlertDescription maxWidth="sm" className="qfont">
-                You have no tasks at the moment
-              </AlertDescription>
-            </Alert>
-          )}
-        </Stack>
-      </Box>)
-}
+  return (
+    <Box>
+      <Stack spacing={"4"}>
+        {loading && !error && <Spinner size="lg" colorScheme="green.500" />}
+        {!loading && !error && (
+          <>
+            {tasks.map((s, i) => {
+              return (
+                <SlideFade key={i} dir="left" in>
+                  <TaskLinkBar s={s} />
+                </SlideFade>
+              );
+            })}
+          </>
+        )}
+        {!loading && error && (
+          <>
+            <ErrorBanner message={error.message} retry={fetchAllTasks} />
+          </>
+        )}
+        {tasks.length == 0 && <Alerto />}
+      </Stack>
+    </Box>
+  );
+};
 
-
-const CancelledTasks = ()=>{
-	  const [loading, setLoading] = useState(false);
+const CancelledTasks = () => {
+  const [loading, setLoading] = useState(false);
   const [tasks, setTasks] = useState([]);
   const [error, setErr] = useState(null);
 
@@ -218,69 +209,28 @@ const CancelledTasks = ()=>{
   useEffect(() => {
     fetchAllTasks();
   }, []);
-	return( <Box>
-             <Stack spacing={"4"}>
-          {loading && !error && <Spinner size="lg" colorScheme="green.500" />}
-          {!loading && !error && (
-            <>
-              {tasks.map((s, i) => {
-                return (
-                  <SlideFade key={i} dir="left" in>
-                    <TaskLinkBar s={s} />
-                  </SlideFade>
-                );
-              })}
-            </>
-          )}
-          {!loading && error && (
-            <>
-              <ErrorBanner message={error.message} retry={fetchAllTasks} />
-            </>
-          )}
-          {tasks.length == 0 && (
-            <Alert
-              status="info"
-              variant="subtle"
-              flexDirection="column"
-              justifyContent="center"
-              textAlign="center"
-              minHeight="220px"
-            >
-              <AlertIcon size="40px" mr={0} />
-              <AlertTitle mt={4} mb={1} fontSize="lg" className="qfont">
-                Oops! Looks empty here!
-              </AlertTitle>
-              <AlertDescription maxWidth="sm" className="qfont">
-                You have no tasks at the moment
-              </AlertDescription>
-            </Alert>
-          )}
-        </Stack>
-      </Box>)
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  return (
+    <Box>
+      <Stack spacing={"4"}>
+        {loading && !error && <Spinner size="lg" colorScheme="green.500" />}
+        {!loading && !error && (
+          <>
+            {tasks.map((s, i) => {
+              return (
+                <SlideFade key={i} dir="left" in>
+                  <TaskLinkBar s={s} />
+                </SlideFade>
+              );
+            })}
+          </>
+        )}
+        {!loading && error && (
+          <>
+            <ErrorBanner message={error.message} retry={fetchAllTasks} />
+          </>
+        )}
+        {tasks.length == 0 && <Alerto />}
+      </Stack>
+    </Box>
+  );
+};

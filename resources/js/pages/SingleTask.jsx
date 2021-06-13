@@ -35,6 +35,8 @@ import ReactTimeAgo from "react-time-ago/commonjs/ReactTimeAgo";
 import { MdLocationOn, MdCollections } from "react-icons/md";
 import cogoToast from "cogo-toast";
 import { useAuth } from "../contexts/AuthProvider";
+import CompleteTaskDialog from "../components/Dashboard/CompleteTaskDialog";
+import CancelTaskDialog from "../components/Dashboard/CancelTaskDialog";
 
 function SingleTask() {
   const { task, setTask } = useGenCtx();
@@ -48,100 +50,6 @@ function SingleTask() {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
 
-  const cancelTask = (data) => {
-    setLoading(true);
-    axios
-      .post("/api/tasks/cancel", data)
-      .then((response) => {
-        let { data } = response.data;
-        console.log(data);
-        setBidSubmitted(false);
-        setTask(data[0]);
-        const bidvendors = [];
-
-        data[0].bids.forEach((bid) => {
-          bidvendors.push(bid.vendor.id);
-        });
-        setBidders(bidvendors);
-        cogoToast.success("CANCELLED!!");
-        setLoading(false);
-      })
-      .catch((error) => {
-        setLoading(false);
-        onClose();
-
-        if (error.response) {
-          // The request was made and the server responded with a status code that falls out of the range of 2xx
-          let err = error.response.data;
-          if (err.errors) {
-            for (const [key, value] of Object.entries(err.errors)) {
-              const { hide } = cogoToast.error(value, {
-                onClick: () => {
-                  hide();
-                },
-              });
-            }
-          } else {
-            cogoToast.error(err.message || "An error occurred");
-          }
-        } else if (error.request) {
-          // The request was made but no response was received `error.request` is an instance of XMLHttpRequest in the browser and an instance of http.ClientRequest in node.js
-          let err = error.request;
-          cogoToast.error("An error occurred, please try again");
-        } else {
-          // Something happened in setting up the request that triggered an Error
-          let err = error.message;
-          cogoToast.error(err || "An error occurred, please try again");
-        }
-      });
-  };
-  const markAsDone = (data) => {
-    setLoading(true);
-    axios
-      .post("/api/tasks/done", data)
-      .then((response) => {
-        let { data } = response.data;
-        console.log(data);
-        setBidSubmitted(false);
-        setTask(data[0]);
-        const bidvendors = [];
-
-        data[0].bids.forEach((bid) => {
-          bidvendors.push(bid.vendor.id);
-        });
-        setBidders(bidvendors);
-        cogoToast.success("Done!");
-        setLoading(false);
-      })
-      .catch((error) => {
-        setLoading(false);
-        onClose();
-
-        if (error.response) {
-          // The request was made and the server responded with a status code that falls out of the range of 2xx
-          let err = error.response.data;
-          if (err.errors) {
-            for (const [key, value] of Object.entries(err.errors)) {
-              const { hide } = cogoToast.error(value, {
-                onClick: () => {
-                  hide();
-                },
-              });
-            }
-          } else {
-            cogoToast.error(err.message || "An error occurred");
-          }
-        } else if (error.request) {
-          // The request was made but no response was received `error.request` is an instance of XMLHttpRequest in the browser and an instance of http.ClientRequest in node.js
-          let err = error.request;
-          cogoToast.error("An error occurred, please try again");
-        } else {
-          // Something happened in setting up the request that triggered an Error
-          let err = error.message;
-          cogoToast.error(err || "An error occurred, please try again");
-        }
-      });
-  };
   const rejectBid = (data) => {
     setLoading(true);
     axios
@@ -442,69 +350,56 @@ function SingleTask() {
                       {task && task.user.firstname + " " + task.user.lastname}
                     </Text>
                   </Box>
-									<>
-         {task.client == user.id && task.status == 'PENDING' &&  <Button
-                    mb={4}
-                    size="sm"
-                    colorScheme="green"
-                    variant="outline"
-										ml='auto'
-                    bg="green.500"
-                    _hover={{
-                      bg: "green.500",
-                    }}
-                    onClick={() => {
-                      markAsDone({task: task.id});
-                    }}
-                    color="white"
-                  >
-                    Mark as Done
-                  </Button>}
-         {task.client == user.id && task.status == 'PENDING' &&  <Button
-                    mb={4}
-                    size="sm"
-                    colorScheme="red"
-                    variant="outline"
-                    bg="red.700"
-                    _hover={{
-                      bg: "red.700",
-                    }}
-                    onClick={() => {
-                      cancelTask({task: task.id});
-                    }}
-                    color="white"
-                  >
-                    Cancel Task
-                  </Button>}
-         {task.status == 'DONE' &&  <Button
-                    mb={4}
-                    size="sm"
-                    colorScheme="green"
-                    variant="outline"
-										 _hover={{
-                      bg: "green.500",
-                    }}
-                    bg="green.500"
-                   disabled
-                    color="white"
-                  >
-                  COMPLETED
-                  </Button>}
-         {task.status == 'CANCELLED' &&  <Button
-                    mb={4}
-                    size="sm"
-                    colorScheme="red"
-                    variant="outline"
-										 _hover={{
-                      bg: "red.700",
-                    }}
-                    bg="red.700"
-                   disabled
-                    color="white"
-                  >
-                  CANCELLED
-                  </Button>}
-									</>
+                  <Box>
+                    {task.client == user.id &&
+                      task.status == "PENDING" &&
+                      task.bids.length !== 0 && (
+                        <CompleteTaskDialog
+                          task={task}
+                          setTask={setTask}
+                          setBidders={setBidders}
+                        />
+                      )}
+                    {task.client == user.id && task.status == "PENDING" && (
+                      <CancelTaskDialog
+                        task={task}
+                        setTask={setTask}
+                        setBidders={setBidders}
+                      />
+                    )}
+                    {task.status == "DONE" && (
+                      <Button
+                        mb={4}
+                        size="sm"
+                        colorScheme="green"
+                        variant="outline"
+                        _hover={{
+                          bg: "green.500",
+                        }}
+                        bg="green.500"
+                        disabled
+                        color="white"
+                      >
+                        COMPLETED
+                      </Button>
+                    )}
+                    {task.status == "CANCELLED" && (
+                      <Button
+                        mb={4}
+                        size="sm"
+                        colorScheme="red"
+                        variant="outline"
+                        _hover={{
+                          bg: "red.700",
+                        }}
+                        bg="red.700"
+                        disabled
+                        color="white"
+                      >
+                        CANCELLED
+                      </Button>
+                    )}
+                  </Box>
                 </Flex>
                 <Text as="small" textTransform="italic">
                   {task && <ReactTimeAgo date={task.created_at} />}
@@ -611,17 +506,20 @@ function SingleTask() {
                       {task && "$" + task.offer}
                     </Text>
                   </Box>
-                  {user.role == "VENDOR" &&task.status !== 'DONE' && task.status !== 'CANCELLED'	 && !bidSubmitted && (
-                    <Button
-                      ml={4}
-                      mb={4}
-                      bg="green.500"
-                      color="white"
-                      onClick={onOpen}
-                    >
-                      Bid for this task
-                    </Button>
-                  )}
+                  {user.role == "VENDOR" &&
+                    task.status !== "DONE" &&
+                    task.status !== "CANCELLED" &&
+                    !bidSubmitted && (
+                      <Button
+                        ml={4}
+                        mb={4}
+                        bg="green.500"
+                        color="white"
+                        onClick={onOpen}
+                      >
+                        Bid for this task
+                      </Button>
+                    )}
 
                   {user.role == "VENDOR" && bidSubmitted && (
                     <Alert status="success">
@@ -701,102 +599,105 @@ function SingleTask() {
                                 {b.comment}
                               </Text>
 
-														{task.status !== 'DONE' && task.status !== 'CANCELLED'	&&<>
-															{/* delete bid button */}
-                              {bidSubmitted && (
-                                <Flex py={3}>
-                                  <Button
-                                    size="sm"
-                                    onClick={() => {
-                                      deleteBid({
-                                        bid: b.id,
-                                        task: task.id,
-                                      });
-                                    }}
-                                    colorScheme="red"
-                                  >
-                                    Delete Your Bid
-                                  </Button>
-                                </Flex>
-                              )}
-															{/* buttons for client */}
-                              {user.role == "CLIENT" &&
-                                user.id === task.client && (
+                              {task.status !== "DONE" &&
+                                task.status !== "CANCELLED" && (
                                   <>
-                                    <Button
-                                      mb={4}
-                                      size="sm"
-                                      colorScheme="green"
-                                      variant="outline"
-                                      bg="green.500"
-                                      _hover={{
-                                        bg: "green.500",
-                                      }}
-                                      onClick={() => {
-                                        setRecipient(b.vendor);
-                                      }}
-                                      color="white"
-                                    >
-                                      <Link
-                                        style={{
-                                          display: "flex",
-                                          width: "100%",
-                                          height: "100%",
-                                          alignItems: "center",
-                                        }}
-                                        to="/messages"
-                                      >
-                                        Negotiate
-                                      </Link>
-                                    </Button>
-																		{/* accept bidd button */}
-                                    {b.status != "ACCEPTED" && (
-                                      <Button
-                                        ml={4}
-                                        _hover={{
-                                          bg: "green.500",
-                                        }}
-                                        mb={4}
-                                        size="sm"
-                                        colorScheme="green"
-                                        variant="outline"
-                                        bg="green.500"
-                                        color="white"
-                                        onClick={() => {
-                                          acceptBid({
-                                            bid: b.id,
-                                            task: task.id,
-                                          });
-                                        }}
-                                      >
-                                        Accept Bid
-                                      </Button>
+                                    {/* delete bid button */}
+                                    {bidSubmitted && (
+                                      <Flex py={3}>
+                                        <Button
+                                          size="sm"
+                                          onClick={() => {
+                                            deleteBid({
+                                              bid: b.id,
+                                              task: task.id,
+                                            });
+                                          }}
+                                          colorScheme="red"
+                                        >
+                                          Delete Your Bid
+                                        </Button>
+                                      </Flex>
                                     )}
-                                    {bid.status != "CANCELLED" && (
-                                      <Button
-                                        ml={4}
-                                        _hover={{
-                                          bg: "red.700",
-                                        }}
-                                        mb={4}
-                                        size="sm"
-                                        colorScheme="green"
-                                        variant="outline"
-                                        bg="red.600"
-                                        color="white"
-                                        onClick={() => {
-                                          rejectBid({
-                                            bid: b.id,
-                                            task: task.id,
-                                          });
-                                        }}
-                                      >
-                                        Reject Bid
-                                      </Button>
-                                    )}
+                                    {/* buttons for client */}
+                                    {user.role == "CLIENT" &&
+                                      user.id === task.client && (
+                                        <>
+                                          <Button
+                                            mb={4}
+                                            size="sm"
+                                            colorScheme="green"
+                                            variant="outline"
+                                            bg="green.500"
+                                            _hover={{
+                                              bg: "green.500",
+                                            }}
+                                            onClick={() => {
+                                              setRecipient(b.vendor);
+                                            }}
+                                            color="white"
+                                          >
+                                            <Link
+                                              style={{
+                                                display: "flex",
+                                                width: "100%",
+                                                height: "100%",
+                                                alignItems: "center",
+                                              }}
+                                              to="/messages"
+                                            >
+                                              Negotiate
+                                            </Link>
+                                          </Button>
+                                          {/* accept bidd button */}
+                                          {b.status != "ACCEPTED" && (
+                                            <Button
+                                              ml={4}
+                                              _hover={{
+                                                bg: "green.500",
+                                              }}
+                                              mb={4}
+                                              size="sm"
+                                              colorScheme="green"
+                                              variant="outline"
+                                              bg="green.500"
+                                              color="white"
+                                              onClick={() => {
+                                                acceptBid({
+                                                  bid: b.id,
+                                                  task: task.id,
+                                                });
+                                              }}
+                                            >
+                                              Accept Bid
+                                            </Button>
+                                          )}
+                                          {bid.status != "CANCELLED" && (
+                                            <Button
+                                              ml={4}
+                                              _hover={{
+                                                bg: "red.700",
+                                              }}
+                                              mb={4}
+                                              size="sm"
+                                              colorScheme="green"
+                                              variant="outline"
+                                              bg="red.600"
+                                              color="white"
+                                              onClick={() => {
+                                                rejectBid({
+                                                  bid: b.id,
+                                                  task: task.id,
+                                                });
+                                              }}
+                                            >
+                                              Reject Bid
+                                            </Button>
+                                          )}
+                                        </>
+                                      )}
                                   </>
                                 )}
-																		</>}
                             </AccordionPanel>
                           </AccordionItem>
                         );
