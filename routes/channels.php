@@ -21,3 +21,7 @@ Broadcast::channel('chat.{receiverid}', function ($user, $receiverid) {
 
 	return $user;
 });
+Broadcast::channel('notif.{receiverid}', function ($user, $receiverid) {
+
+	return $user;
+});

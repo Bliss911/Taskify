@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BidController;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\NotifController;
 use App\Http\Controllers\SkillController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\WalletController;
@@ -66,5 +67,19 @@ Route::prefix('wallet')->group(function () {
 	Route::middleware('auth:api')->group(function () {
 		Route::post('/add', [WalletController::class, 'add']);
 		Route::get('/payments', [WalletController::class, 'payments']);
+	});
+});
+Route::prefix('notifs')->group(function () {
+
+	Route::middleware('auth:api')->group(function () {
+		Route::get('/', [NotifController::class, 'index']);
+	});
+});
+Route::prefix('admin')->group(function () {
+
+	Route::middleware(['auth:api', 'admin'])->group(function () {
+		Route::get('/users', [AuthController::class, 'users']);
+		Route::get('/pending', [AuthController::class, 'pendingUsers']);
+		Route::post('/verify', [AuthController::class, 'verify']);
 	});
 });

@@ -146,6 +146,7 @@ function SingleTask() {
   };
   const deleteBid = (data) => {
     setLoading(true);
+    setBidSubmitted(false);
     axios
       .post("/api/bids/delete", data)
       .then((response) => {

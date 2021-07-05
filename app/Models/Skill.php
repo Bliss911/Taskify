@@ -13,7 +13,7 @@ class Skill extends Model
 
     public function user()
     {
-        return $this->belongsToMany(User::class, 'user_skills');
+        return $this->belongsToMany(User::class, 'user_skills', 'skill', 'vendor');
     }
     public function task()
     {

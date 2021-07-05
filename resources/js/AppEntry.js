@@ -17,10 +17,13 @@ import PrivateRoute from './helpers/PrivateRoute';
 import Feed from './pages/Feed';
 import Dashboard from './pages/Dashboard';
 import { useLocation } from 'react-router-dom';
+import { user } from './components/HowItWorks/data';
+import { useAuth } from './contexts/AuthProvider';
 
 
 function App () {
 	const [loading, setLoading] = useState(true)
+	const {user} = useAuth()
 	const { pathname } = useLocation()
 	useEffect(() => {
 		setTimeout(() => {
@@ -72,6 +75,9 @@ function App () {
 							<PrivateRoute exact path='/messages'>
 								<Dashboard />
 							</PrivateRoute>
+							<PrivateRoute exact path='/notifications'>
+								<Dashboard />
+							</PrivateRoute>
 							<PrivateRoute exact path='/task_history'>
 								<Dashboard />
 							</PrivateRoute>
@@ -81,6 +87,9 @@ function App () {
 							<PrivateRoute exact path='/messages'>
 								<Dashboard />
 							</PrivateRoute>
+						{user.role === 'ADMIN' &&	<PrivateRoute exact path="/users">
+								<Dashboard />
+							</PrivateRoute>}
 
 							<Route path="*">
 								<NotFound />

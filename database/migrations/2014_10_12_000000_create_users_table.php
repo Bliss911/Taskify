@@ -20,6 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->enum('role', ['CLIENT', 'ADMIN', 'VENDOR'])->default('CLIENT');
+            $table->enum('status', ['VERIFIED', 'UNVERIFIED'])->default('UNVERIFIED');
             $table->timestamps();
         });
     }

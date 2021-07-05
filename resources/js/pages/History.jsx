@@ -1,5 +1,5 @@
-import { Flex } from "@chakra-ui/layout";
-import React, { useState, useEffect } from "react";
+import { Flex } from '@chakra-ui/layout';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   useBreakpointValue,
@@ -16,7 +16,7 @@ import {
   AlertIcon,
   AlertTitle,
   AlertDescription,
-} from "@chakra-ui/react";
+} from '@chakra-ui/react';
 function Alerto() {
   return (
     <Alert
@@ -37,11 +37,12 @@ function Alerto() {
     </Alert>
   );
 }
-import { FaCheckDouble, FaDollarSign } from "react-icons/fa";
-import TaskLinkBar from "../components/TasksFeed/TaskLinkBar";
-import ErrorBanner from "../components/ErrorBanner";
-import { useAuth } from "../contexts/AuthProvider";
+import { FaCheckDouble, FaDollarSign } from 'react-icons/fa';
+import TaskLinkBar from '../components/TasksFeed/TaskLinkBar';
+import ErrorBanner from '../components/ErrorBanner';
+import { useAuth } from '../contexts/AuthProvider';
 export default function History() {
+  const { user } = useAuth();
   // 1. Create the component
   function DataTabs({ data }) {
     return (
@@ -65,15 +66,15 @@ export default function History() {
   // 2. Create an array of data
   const tabData = [
     {
-      label: "Pending",
+      label: 'Pending Bids',
       component: <PendingTasks />,
     },
     {
-      label: "Completed",
+      label: user.role === 'VENDOR' ? 'Accepted Bids' : 'Completed',
       component: <CompletedTasks />,
     },
     {
-      label: "Cancelled",
+      label: user.role === 'VENDOR' ? 'Rejected Bids' : 'Cancelled',
       component: <CancelledTasks />,
     },
   ];
@@ -93,7 +94,7 @@ const PendingTasks = () => {
     setLoading(true);
     setErr(null);
     try {
-      const dt = await axios.get("/api/tasks/mypendingtasks");
+      const dt = await axios.get('/api/tasks/mypendingtasks');
       const { data } = dt.data;
       setTasks(data);
       console.log(data);
@@ -109,7 +110,7 @@ const PendingTasks = () => {
   }, []);
   return (
     <Box>
-      <Stack spacing={"4"}>
+      <Stack spacing={'4'}>
         {loading && !error && <Spinner size="lg" colorScheme="green.500" />}
         {!loading && !error && (
           <>
@@ -144,7 +145,7 @@ const CompletedTasks = () => {
     setLoading(true);
     setErr(null);
     try {
-      const dt = await axios.get("/api/tasks/mycompletedtasks");
+      const dt = await axios.get('/api/tasks/mycompletedtasks');
       const { data } = dt.data;
       setTasks(data);
       console.log(data);
@@ -160,7 +161,7 @@ const CompletedTasks = () => {
   }, []);
   return (
     <Box>
-      <Stack spacing={"4"}>
+      <Stack spacing={'4'}>
         {loading && !error && <Spinner size="lg" colorScheme="green.500" />}
         {!loading && !error && (
           <>
@@ -195,7 +196,7 @@ const CancelledTasks = () => {
     setLoading(true);
     setErr(null);
     try {
-      const dt = await axios.get("/api/tasks/mycancelledtasks");
+      const dt = await axios.get('/api/tasks/mycancelledtasks');
       const { data } = dt.data;
       setTasks(data);
       console.log(data);
@@ -211,7 +212,7 @@ const CancelledTasks = () => {
   }, []);
   return (
     <Box>
-      <Stack spacing={"4"}>
+      <Stack spacing={'4'}>
         {loading && !error && <Spinner size="lg" colorScheme="green.500" />}
         {!loading && !error && (
           <>

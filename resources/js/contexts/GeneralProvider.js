@@ -17,8 +17,34 @@ const GeneralProvider = ({ children }) => {
 	const [recipient, setRecipient] = useState(null)
 	const [msgs, setmsgs] = useState([])
 	const [err, setErr] = useState(false);
+	const [error, setError] = useState(null);
 	const [loadingChatMessages, setLoadingChatMessages] = useState(false);
 
+	const [loading, setLoading] = useState(false);
+	const [notifs, setNotifs] = useState([]);
+	const [notifCount, setNotifCount] = useState(null);
+
+
+	const fetchNotifs = async () => {
+		if (user) {
+
+			setLoading(true);
+			setError(null);
+			try {
+				const dt = await axios.get("/api/notifs");
+				const { data } = dt.data;
+				setError(null);
+
+				setNotifs(data.notifs);
+				setNotifCount(data.unreadCount);
+				console.log(data);
+				setLoading(false);
+			} catch (error) {
+				setError(error.message);
+				setLoading(false);
+			}
+		}
+	};
 	const fetchMessagesForChat = async (id) => {
 		setLoadingChatMessages(true);
 		setErr(null);
@@ -40,12 +66,19 @@ const GeneralProvider = ({ children }) => {
 	};
 
 	useEffect(() => {
+		fetchNotifs()
 		Echo.private("chat." + user.id).listen(".MessageSent", (e) => {
 			cogoToast.info("New message from " + e.user.firstname, {
 				position: "bottom-right",
 			});
 			setmsgs(e.message.messages);
 			scrollToBottom();
+		});
+		Echo.private("notif." + user.id).listen(".Notif", (e) => {
+			cogoToast.info(e.notif, {
+				position: "bottom-right",
+			});
+			fetchNotifs()
 		});
 	}, [user])
 
@@ -62,7 +95,12 @@ const GeneralProvider = ({ children }) => {
 				fetchMessagesForChat,
 				loadingChatMessages,
 				err,
-				scrollToBottom
+				error,
+				scrollToBottom,
+				notifs,
+				loading,
+				notifCount,
+				fetchNotifs
 			}}
 		>
 			{children}

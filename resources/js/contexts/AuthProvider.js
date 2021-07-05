@@ -37,7 +37,8 @@ const AuthProvider = ({ children }) => {
         setLoading(false)
         let token = response.data.data.access_token.split('').reverse().join('');
         localStorage.setItem('frespTfHc0yj864fjtgSaFfdsaArw35hd4s', JSON.stringify(token))
-        checkAuth()
+        window.location.reload()
+        // checkAuth()
     }
 
     const login = (data) => {

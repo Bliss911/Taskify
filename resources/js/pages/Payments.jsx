@@ -43,7 +43,7 @@ export default function Payments() {
   }, []);
   return (
     <>
-      {payments.length === 0 && (
+      {!loading && !error && payments.length === 0 && (
         <Alert
           status="info"
           variant="subtle"

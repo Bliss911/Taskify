@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bid;
+use App\Models\Notif;
 use App\Models\Task;
 use App\Models\User;
 use App\Models\Wallet;
@@ -88,6 +89,7 @@ class AuthController extends Controller
 			'firstname' => $request->firstname,
 			'lastname' => $request->lastname,
 			'email' => $request->email,
+			'status' => 'VERIFIED',
 		]);
 
 
@@ -158,6 +160,44 @@ class AuthController extends Controller
 			$accepted = Task::where('status', 'DONE')->where('client', Auth::user()->id)->count();
 			$cancelled = Task::where('status', 'CANCELLED')->where('client', Auth::user()->id)->count();
 			return $this->sendResult('fetched', ['wallet' => $wallet, 'pending_tasks' => $pending, 'cancelled_tasks' => $cancelled, 'accepted_tasks' => $accepted], [], true);
+		} else if (Auth::user()->role == 'ADMIN') {
+			$pending = Task::where('status', 'PENDING')->count();
+			$accepted = Task::where('status', 'DONE')->count();
+			$cancelled = Task::count();
+			return $this->sendResult('fetched', ['wallet' => $wallet, 'pending_tasks' => $pending, 'cancelled_tasks' => $cancelled, 'accepted_tasks' => $accepted], [], true);
 		}
+	}
+	public function users()
+	{
+		$verified = User::with('skills')->where('status', 'VERIFIED')->where('role', '!=', 'ADMIN')->orderByDesc('updated_at')->get();
+		return $this->sendResult('fetched', ['pending' => $verified], [], true);
+	}
+	public function pendingUsers()
+	{
+		$unverified = User::where('status', 'UNVERIFIED')->with('skills')->orderByDesc('created_at')->get();
+		return $this->sendResult('fetched', ['pending' => $unverified], [], true);
+	}
+	public function verify(Request $request)
+	{
+		$data = $request->all();
+		$validator = Validator::make($data, [
+			'user' => 'required',
+		]);
+		if ($validator->fails()) {
+			$status = false;
+			$errors = $validator->errors();
+			$message = "User not found";
+			return $this->sendResult($message, [], $errors, $status);
+		}
+
+		User::where('id', $request->user)->update(['status' => 'VERIFIED']);
+		$user = 		User::with('skills')->where('id', $request->user)->first();
+		Notif::create(['user' => $user->id, 'message' => 'Your Account has been verified. Logout and login again to start a new session. Get Tasking!', 'status' => 'UNREAD']);
+
+		$m = 'Your Account has been verified. Logout and login again to start a new session. Get Tasking!';
+		$this->sendNotif($m, $user->id);
+
+
+		return $this->sendResult('fetched', ['user' => $user], [], true);
 	}
 }

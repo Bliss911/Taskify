@@ -1,5 +1,5 @@
-import { Box, Text, Flex, Divider } from "@chakra-ui/layout";
-import React, { useState, useEffect } from "react";
+import { Box, Text, Flex, Divider } from '@chakra-ui/layout';
+import React, { useState, useEffect } from 'react';
 import {
   useBreakpointValue,
   SlideFade,
@@ -10,27 +10,28 @@ import {
   AlertIcon,
   AlertTitle,
   AlertDescription,
-} from "@chakra-ui/react";
-import TaskLinkBar from "../components/TasksFeed/TaskLinkBar";
-import SkillsSelect from "../components/TasksFeed/SkillsSelect";
-import { MdMenu } from "react-icons/md";
-import axios from "axios";
-import ErrorBanner from "../components/ErrorBanner";
+} from '@chakra-ui/react';
+import TaskLinkBar from '../components/TasksFeed/TaskLinkBar';
+import SkillsSelect from '../components/TasksFeed/SkillsSelect';
+import { MdMenu } from 'react-icons/md';
+import axios from 'axios';
+import ErrorBanner from '../components/ErrorBanner';
+import { useAuth } from '../contexts/AuthProvider';
 export default function Feed() {
-  const [currentTab, setCurrentTab] = useState("All");
+  const [currentTab, setCurrentTab] = useState('All');
   const [loading, setLoading] = useState(false);
   const [show, setShow] = useState(false);
   const [skills, setSkills] = useState([]);
   const [error, setErr] = useState(null);
-
-  const searchCategories = (v) => {
+  const { user } = useAuth();
+  const searchCategories = v => {
     setCurrentTab(v.name);
     fetchAllTasks(v.id);
   };
   const fetchAllTasks = async (id = null) => {
     setLoading(true);
     setErr(null);
-    const link = "/api/tasks";
+    const link = '/api/tasks';
     if (!id) {
       try {
         const dt = await axios.post(link);
@@ -63,39 +64,39 @@ export default function Feed() {
     <>
       <Flex
         id="feed-container"
-        minHeight={"80vh"}
+        minHeight={'80vh'}
         height="fit-content"
         position="relative"
         pt={4}
         mb={4}
-        flexDir={useBreakpointValue({ base: "column", md: "row" })}
+        flexDir={useBreakpointValue({ base: 'column', md: 'row' })}
         justifyContent="space-between"
         overflowY="scroll"
       >
         <Box
           width={useBreakpointValue({
-            base: "60%",
-            md: "32%",
+            base: '60%',
+            md: '32%',
           })}
           position={useBreakpointValue({
-            base: "absolute",
-            md: "initial",
+            base: 'absolute',
+            md: 'initial',
           })}
           zIndex="999"
           transform={useBreakpointValue({
-            base: show ? "translateX(0)" : "translateX(-102%)",
-            md: "",
+            base: show ? 'translateX(0)' : 'translateX(-102%)',
+            md: '',
           })}
           transition="all 0.4s ease"
           top="0"
           height="100%"
           bg={useBreakpointValue({
-            base: useColorModeValue("white", "#1a202c"),
-            md: "initial",
+            base: useColorModeValue('white', '#1a202c'),
+            md: 'initial',
           })}
           pr={useBreakpointValue({
-            base: "15px",
-            md: "",
+            base: '15px',
+            md: '',
           })}
           boxShadow="md"
         >
@@ -112,12 +113,12 @@ export default function Feed() {
             </Text>
           </Box>
 
-          <Divider width={"100%"} margin="auto" height="5px" />
+          <Divider width={'100%'} margin="auto" height="5px" />
           <SkillsSelect searchCategories={searchCategories} setShow={setShow} />
         </Box>
 
         <Box
-          width={useBreakpointValue({ base: "100%", md: "65%" })}
+          width={useBreakpointValue({ base: '100%', md: '65%' })}
           height="100%"
           top="0"
         >
@@ -130,16 +131,17 @@ export default function Feed() {
               fontWeight="bold"
               className="qfont"
             >
-              {currentTab + " "} Tasks
+              {currentTab + ' '} Tasks
             </Text>
+
             <Box
               onClick={() => {
-                setShow((prev) => !prev);
+                setShow(prev => !prev);
               }}
               as="span"
               display={useBreakpointValue({
-                base: "block",
-                md: "none",
+                base: 'block',
+                md: 'none',
               })}
               color="#0ca25f"
             >
@@ -148,7 +150,13 @@ export default function Feed() {
               </IconButton>
             </Box>
           </Flex>
-          <Divider width={"100%"} margin="auto" height="5px" />
+          <Divider width={'100%'} margin="auto" height="5px" />
+          {user.status === 'UNVERIFIED' && (
+            <Alert status="warning">
+              <AlertIcon />
+              Your account is unverified. You can't select any task yet.
+            </Alert>
+          )}
           <Box>
             {loading && !error && <Spinner size="lg" colorScheme="green.500" />}
             {!loading && !error && (

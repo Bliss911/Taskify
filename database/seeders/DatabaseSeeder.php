@@ -36,6 +36,7 @@ class DatabaseSeeder extends Seeder
 				'lastname' => 'User',
 				'email' => 'admin@admin.com',
 				'role' => 'ADMIN',
+				'status' => 'VERIFIED',
 				'password' => '$2y$10$txygzggJbP8fY3aH7xDsSOOSx9qdE63xldttcKkqamzOfgM1Ud3lq'
 			]
 		];
