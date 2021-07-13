@@ -24,7 +24,11 @@ Route::get('jobslist', [SkillController::class, 'index']);
 
 Route::prefix('auth')->group(function () {
 	Route::post('enroll', [AuthController::class, 'enroll']);
+	Route::get('user', [AuthController::class, 'user']);
+	Route::post('firstname', [AuthController::class, 'firstname']);
+	Route::post('lastname', [AuthController::class, 'lastname']);
 	Route::post('join', [AuthController::class, 'join']);
+	Route::post('upload', [AuthController::class, 'imageUploadPost']);
 	Route::post('login', [AuthController::class, 'login']);
 
 	Route::middleware('auth:api')->group(function () {

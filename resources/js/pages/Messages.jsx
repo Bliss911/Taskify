@@ -8,7 +8,9 @@ import {
   Flex,
   Avatar,
   Stack,
+  Center,
   HStack,
+  Divider,
   Text,
   StackDivider,
 } from "@chakra-ui/react";
@@ -16,9 +18,10 @@ import {
 import ReactTimeAgo from "react-time-ago";
 import ChatBox from "../components/Dashboard/ChatBox";
 
-function Messages({ showUsers, setShowUsers }) {
+function Messages() {
   const [allMessages, setAllMessages] = useState([]);
   const [err, setErr] = useState(false);
+  const [showUsers, setShowUsers] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const { user } = useAuth();
@@ -43,11 +46,9 @@ function Messages({ showUsers, setShowUsers }) {
     fetchChat();
   }, [msgs]);
   return (
-    <Flex py="3">
+    <Flex bg="white">
       <Stack
         width={["100%", "100%", "60%", "70%"]}
-        h="70vh"
-        pr="2"
         position="relative"
         overflowY="hidden"
         bg="gray.100"
@@ -57,7 +58,9 @@ function Messages({ showUsers, setShowUsers }) {
 
       <Stack
         id="user-scrll"
-        h="70vh"
+        zIndex="10"
+        bg="white"
+        h="calc(100vh - 83px)"
         position={["absolute", "absolute", "relative", "relative"]}
         right="0"
         overflowY="scroll"
@@ -68,26 +71,19 @@ function Messages({ showUsers, setShowUsers }) {
           md: "none",
         }}
         width={["50%", "50%", "40%", "30%"]}
-        shadow={"lg"}
-        divider={
-          <StackDivider
-            style={{
-              marginLeft: "auto",
-              marginRight: "auto",
-            }}
-            my="0"
-            width="80%"
-          />
-        }
       >
-        <Text textAlign="center">Chats</Text>
+        <Box py="2">
+          <Text textAlign="center">Chats</Text>
+        </Box>
+        <Divider />
         {allMessages && allMessages.length == 0 && (
-          <HStack px="2" py="2" bg="gray.100">
+          <Center px="2" py="2" bg="gray.100">
             <Text textAlign="center" color="red">
               No chats yet
             </Text>
-          </HStack>
+          </Center>
         )}
+
         {allMessages &&
           allMessages.map((m, i) => {
             return (
@@ -109,11 +105,11 @@ function Messages({ showUsers, setShowUsers }) {
                     firstname:
                       user.id === m.sender.id
                         ? m.recipient.firstname
-                        : m.recipient.firstname,
+                        : m.sender.firstname,
                     lastname:
                       user.id === m.sender.id
                         ? m.recipient.lastname
-                        : m.recipient.lastname,
+                        : m.sender.lastname,
                     chat: m.id,
                   });
                   setmsgs([]);

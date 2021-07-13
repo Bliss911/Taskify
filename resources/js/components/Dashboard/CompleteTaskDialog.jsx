@@ -5,6 +5,7 @@ import {
   DrawerFooter,
   DrawerHeader,
   Button,
+  IconButton,
   DrawerOverlay,
   DrawerContent,
   Alert,
@@ -12,6 +13,7 @@ import {
   DrawerCloseButton,
 } from "@chakra-ui/react";
 import cogoToast from "cogo-toast";
+import { FcCheckmark } from "react-icons/fc";
 
 export default function CompleteTaskDialog({ task, setTask, setBidders }) {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -19,6 +21,7 @@ export default function CompleteTaskDialog({ task, setTask, setBidders }) {
   const [submitting, setSubmitting] = useState(false);
 
   const markAsDone = (data) => {
+    console.log(data);
     setSubmitting(true);
     axios
       .post("/api/tasks/done", data)
@@ -68,22 +71,16 @@ export default function CompleteTaskDialog({ task, setTask, setBidders }) {
   return (
     <>
       <Button
+        title="complete task"
         mb={4}
         size="sm"
-        colorScheme="green"
-        variant="outline"
         ml="auto"
-        bg="green.500"
-        _hover={{
-          bg: "green.500",
-        }}
-        // onClick={() => {
-        //   markAsDone({ task: task.id });
-        // }}
-        color="white"
+        mr="2"
+        fontSize="20px"
+        color="green"
         onClick={() => setIsOpen(true)}
       >
-        Mark as Done
+        <FcCheckmark />
       </Button>
 
       <Drawer

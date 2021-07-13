@@ -7,6 +7,7 @@ import {
   Text,
   Flex,
   Stack,
+  HStack,
   Heading,
   Tag,
   Drawer,
@@ -25,6 +26,7 @@ import {
   AccordionPanel,
   Badge,
   AccordionIcon,
+  SimpleGrid,
   Textarea,
 } from "@chakra-ui/react";
 import { useGenCtx } from "../contexts/GeneralProvider";
@@ -153,13 +155,13 @@ function SingleTask() {
         let { data } = response.data;
         console.log(data);
         setBidSubmitted(false);
-        setTask(data[0]);
         const bidvendors = [];
 
         data[0].bids.forEach((bid) => {
           bidvendors.push(bid.vendor.id);
         });
         setBidders(bidvendors);
+        setTask(data[0]);
         cogoToast.success("Bid deleted");
         setLoading(false);
       })
@@ -334,77 +336,33 @@ function SingleTask() {
         </DrawerContent>
       </Drawer>
       {task && (
-        <>
-          <Box py={4} minH={"80Vh"}>
-            <Box>
-              <Stack
-                maxW="lg"
-                borderWidth="1px"
-                borderRadius="lg"
-                className="qfont"
-                p={4}
-              >
-                <Flex justifyContent="space-between">
-                  <Box>
-                    <Text as="h4">Posted by : </Text>
-                    <Text as="b" textTransform="capitalize">
-                      {task && task.user.firstname + " " + task.user.lastname}
-                    </Text>
-                  </Box>
-                  <Box>
-                    {task.client == user.id &&
-                      task.status == "PENDING" &&
-                      task.bids.length !== 0 && (
-                        <CompleteTaskDialog
-                          task={task}
-                          setTask={setTask}
-                          setBidders={setBidders}
-                        />
-                      )}
-                    {task.client == user.id && task.status == "PENDING" && (
-                      <CancelTaskDialog
-                        task={task}
-                        setTask={setTask}
-                        setBidders={setBidders}
-                      />
-                    )}
-                    {task.status == "DONE" && (
-                      <Button
-                        mb={4}
-                        size="sm"
-                        colorScheme="green"
-                        variant="outline"
-                        _hover={{
-                          bg: "green.500",
-                        }}
-                        bg="green.500"
-                        disabled
-                        color="white"
-                      >
-                        COMPLETED
-                      </Button>
-                    )}
-                    {task.status == "CANCELLED" && (
-                      <Button
-                        mb={4}
-                        size="sm"
-                        colorScheme="red"
-                        variant="outline"
-                        _hover={{
-                          bg: "red.700",
-                        }}
-                        bg="red.700"
-                        disabled
-                        color="white"
-                      >
-                        CANCELLED
-                      </Button>
-                    )}
-                  </Box>
-                </Flex>
-                <Text as="small" textTransform="italic">
-                  {task && <ReactTimeAgo date={task.created_at} />}
+        <SimpleGrid columns={[1, 1, 1, 2]} spacing="30px" pb="50px">
+          <Box py="2" bg="white" shadow="md" height="fit-content">
+            <Stack
+              className="qfont"
+              p={4}
+              direction={["row", "row", "row", "row"]}
+              justifyContent="space-between"
+            >
+              <Stack spacing="10px">
+                <Text fontSize="17px" fontWeight="bold" color="green.500">
+                  Task Details:
                 </Text>
+
+                <HStack spacing="3">
+                  <Text>Posted by: </Text>
+                  <Text as="b" textTransform="capitalize">
+                    {task && task.user.firstname + " " + task.user.lastname}
+                  </Text>
+                </HStack>
+
+                <HStack spacing="3">
+                  <Text>Date created: </Text>
+                  <Text textTransform="italic">
+                    {task && <ReactTimeAgo date={task.created_at} />}
+                  </Text>
+                </HStack>
+                {/* box for location */}
                 <Flex alignItems="flex-start">
                   <Box as="span" pt={1} fontSize="18px" color="green">
                     <MdLocationOn />
@@ -419,6 +377,7 @@ function SingleTask() {
                     {task && task.location}
                   </Text>
                 </Flex>
+                {/* box fro bids length */}
                 <Flex alignItems="flex-start">
                   <Box as="span" pt={1} fontSize="18px" color="green">
                     <MdCollections />
@@ -434,281 +393,326 @@ function SingleTask() {
                   </Text>
                 </Flex>
               </Stack>
-
               <Box>
-                <Text color="green.500" as="h5" p={3} className="afont">
-                  Details
-                </Text>
-                <Box
-                  maxW="lg"
-                  borderWidth="1px"
-                  borderRadius="lg"
-                  overflow="hidden"
-                >
-                  <Box my="5">
-                    <Text className="afont" m="3" mb="0" as="h4" size="md">
-                      What client wants :
-                    </Text>
-                    <Text
-                      pl={2}
-                      className="qfont"
-                      fontSize="18px"
-                      mb="0"
-                      as="h4"
-                      size="md"
-                    >
-                      {task && task.title}
-                    </Text>
-                    {task &&
-                      task.skill.map((st, i) => {
-                        return (
-                          <Tag
-                            ml={4}
-                            bg="green.500"
-                            className="qfont"
-                            key={i}
-                            color="white"
-                          >
-                            {" "}
-                            in {st.name}
-                          </Tag>
-                        );
-                      })}
-                  </Box>
-                  <Box my="5">
-                    <Text className="afont" m="3" mb="0" as="h4" size="md">
-                      Description :
-                    </Text>
-                    <Text
-                      m="3"
-                      pl={2}
-                      className="qfont"
-                      fontSize="18px"
-                      mb="0"
-                      as="h4"
-                      size="md"
-                    >
-                      {task && task.description}
-                    </Text>
-                  </Box>
-                  <Box my="5">
-                    <Text className="afont" m="3" mb="0" as="h4" size="md">
-                      What client offered :
-                    </Text>
-                    <Text
-                      m="3"
-                      pl={2}
-                      className="qfont"
-                      fontSize="18px"
-                      mb="0"
-                      as="h4"
-                      size="md"
-                    >
-                      {task && "$" + task.offer}
-                    </Text>
-                  </Box>
-                  {user.role == "VENDOR" &&
-                    task.status !== "DONE" &&
-                    task.status !== "CANCELLED" &&
-                    !bidSubmitted && (
-                      <Button
-                        ml={4}
-                        mb={4}
-                        bg="green.500"
-                        color="white"
-                        onClick={onOpen}
-                      >
-                        Bid for this task
-                      </Button>
-                    )}
-
-                  {user.role == "VENDOR" && bidSubmitted && (
-                    <Alert status="success">
-                      <AlertIcon />
-                      You have submitted a bid
-                    </Alert>
+                {task.client == user.id &&
+                  task.status == "PENDING" &&
+                  task.bids.length !== 0 && (
+                    <CompleteTaskDialog
+                      task={task}
+                      setTask={setTask}
+                      setBidders={setBidders}
+                    />
                   )}
-                </Box>
+                {task.client == user.id && task.status == "PENDING" && (
+                  <CancelTaskDialog
+                    task={task}
+                    setTask={setTask}
+                    setBidders={setBidders}
+                  />
+                )}
+                {task.status == "DONE" && (
+                  <Button
+                    mb={4}
+                    size="sm"
+                    colorScheme="green"
+                    variant="outline"
+                    _hover={{
+                      bg: "green.500",
+                    }}
+                    bg="green.500"
+                    disabled
+                    color="white"
+                  >
+                    COMPLETED
+                  </Button>
+                )}
+                {task.status == "CANCELLED" && (
+                  <Button
+                    mb={4}
+                    size="sm"
+                    colorScheme="red"
+                    variant="outline"
+                    _hover={{
+                      bg: "red.700",
+                    }}
+                    bg="red.700"
+                    disabled
+                    color="white"
+                  >
+                    CANCELLED
+                  </Button>
+                )}
               </Box>
-
-              <Box>
-                <Text color="green.500" as="h5" p={3} className="afont">
-                  Bids
-                </Text>
-                <Stack
-                  maxW="lg"
-                  borderWidth="1px"
-                  borderRadius="lg"
-                  className="qfont"
-                  p={4}
-                >
-                  <Accordion allowToggle>
-                    {task &&
-                      task.bids.map((b, i) => {
-                        return (
-                          <AccordionItem>
-                            <h2>
-                              <AccordionButton
-                                _expanded={{
-                                  bg: "green.500",
-                                  color: "white",
-                                }}
+            </Stack>
+            {/* ---------------------------- */}
+            {/* ---------------------------- */}
+            {/* ---------------------------- */}
+            {/* ---------------------------- */}
+            {/* BIDS SECTION */}
+            {/* ---------------------------- */}
+            {/* ---------------------------- */}
+            {/* ---------------------------- */}
+            {/* ---------------------------- */}
+            <Stack className="qfont" p={4}>
+              <Text fontSize="17px" fontWeight="bold" color="green.500">
+                Bids :
+              </Text>
+              <Accordion allowToggle>
+                {task &&
+                  task.bids.map((b, i) => {
+                    return (
+                      <AccordionItem>
+                        <h2>
+                          <AccordionButton
+                            _expanded={{
+                              bg: "green.500",
+                              color: "white",
+                            }}
+                          >
+                            <Box flex="1" textAlign="left">
+                              Bid from {" " + b.vendor.firstname} - ${b.bid}
+                            </Box>
+                            <Box flex="1" textAlign="right">
+                              <Badge
+                                variant="outline"
+                                color={
+                                  b.status === "ACCEPTED"
+                                    ? "green"
+                                    : b.status === "CANCELLED"
+                                    ? "red"
+                                    : "yellow"
+                                }
                               >
-                                <Box flex="1" textAlign="left">
-                                  Bid from {" " + b.vendor.firstname} - ${b.bid}
-                                </Box>
-                                <Box flex="1" textAlign="right">
-                                  <Badge
-                                    variant="outline"
-                                    color={
-                                      b.status === "ACCEPTED"
-                                        ? "green"
-                                        : b.status === "CANCELLED"
-                                        ? "red"
-                                        : "yellow"
-                                    }
-                                  >
-                                    {b.status}
-                                  </Badge>
-                                </Box>
-                                <AccordionIcon />
-                              </AccordionButton>
-                            </h2>
-                            <AccordionPanel pb={4}>
-                              {user.role == "CLIENT" &&
-                                user.id === task.client &&
-                                b.status == "ACCEPTED" && (
-                                  <Box as="small" color="green.500">
-                                    You accepted this bid
-                                  </Box>
-                                )}
-                              {user.role == "CLIENT" &&
-                                user.id === task.client &&
-                                b.status == "CANCELLED" && (
-                                  <Box as="small" color="red.700">
-                                    You rejected this bid
-                                  </Box>
-                                )}
-                              <Heading
-                                as="h6"
-                                fontSize="16px"
-                                color="green.500"
-                              >
-                                Comment
-                              </Heading>
-                              <Text className="afont" mb="20px" mt="10px">
-                                {b.comment}
-                              </Text>
+                                {b.status}
+                              </Badge>
+                            </Box>
+                            <AccordionIcon />
+                          </AccordionButton>
+                        </h2>
+                        <AccordionPanel pb={4}>
+                          {user.role == "CLIENT" &&
+                            user.id === task.client &&
+                            b.status == "ACCEPTED" && (
+                              <Box as="small" color="green.500">
+                                You accepted this bid
+                              </Box>
+                            )}
+                          {user.role == "CLIENT" &&
+                            user.id === task.client &&
+                            b.status == "CANCELLED" && (
+                              <Box as="small" color="red.700">
+                                You rejected this bid
+                              </Box>
+                            )}
+                          <Heading as="h6" fontSize="16px" color="green.500">
+                            Comment
+                          </Heading>
+                          <Text className="afont" mb="20px" mt="10px">
+                            {b.comment}
+                          </Text>
 
-                              {task.status !== "DONE" &&
-                                task.status !== "CANCELLED" && (
-                                  <>
-                                    {/* delete bid button */}
-                                    {bidSubmitted && (
-                                      <Flex py={3}>
+                          {task.status !== "DONE" &&
+                            task.status !== "CANCELLED" && (
+                              <>
+                                {/* delete bid button */}
+                                {bidSubmitted && (
+                                  <Flex py={3}>
+                                    <Button
+                                      size="sm"
+                                      onClick={() => {
+                                        deleteBid({
+                                          bid: b.id,
+                                          task: task.id,
+                                        });
+                                      }}
+                                      colorScheme="red"
+                                    >
+                                      Delete Your Bid
+                                    </Button>
+                                  </Flex>
+                                )}
+                                {/* buttons for client */}
+                                {user.role == "CLIENT" &&
+                                  user.id === task.client && (
+                                    <Flex>
+                                      <Button
+                                        mb={4}
+                                        size="sm"
+                                        colorScheme="green"
+                                        variant="outline"
+                                        bg="green.500"
+                                        _hover={{
+                                          bg: "green.500",
+                                        }}
+                                        onClick={() => {
+                                          setRecipient(b.vendor);
+                                        }}
+                                        color="white"
+                                      >
+                                        <Link
+                                          style={{
+                                            display: "flex",
+                                            width: "100%",
+                                            height: "100%",
+                                            alignItems: "center",
+                                          }}
+                                          to="/messages"
+                                        >
+                                          Chat
+                                        </Link>
+                                      </Button>
+                                      {/* accept bidd button */}
+                                      {b.status != "ACCEPTED" && (
                                         <Button
+                                          ml={4}
+                                          _hover={{
+                                            bg: "green.500",
+                                          }}
+                                          mb={4}
                                           size="sm"
+                                          colorScheme="green"
+                                          variant="outline"
+                                          bg="green.500"
+                                          color="white"
                                           onClick={() => {
-                                            deleteBid({
+                                            acceptBid({
                                               bid: b.id,
                                               task: task.id,
                                             });
                                           }}
-                                          colorScheme="red"
                                         >
-                                          Delete Your Bid
+                                          Accept
                                         </Button>
-                                      </Flex>
-                                    )}
-                                    {/* buttons for client */}
-                                    {user.role == "CLIENT" &&
-                                      user.id === task.client && (
-                                        <>
-                                          <Button
-                                            mb={4}
-                                            size="sm"
-                                            colorScheme="green"
-                                            variant="outline"
-                                            bg="green.500"
-                                            _hover={{
-                                              bg: "green.500",
-                                            }}
-                                            onClick={() => {
-                                              setRecipient(b.vendor);
-                                            }}
-                                            color="white"
-                                          >
-                                            <Link
-                                              style={{
-                                                display: "flex",
-                                                width: "100%",
-                                                height: "100%",
-                                                alignItems: "center",
-                                              }}
-                                              to="/messages"
-                                            >
-                                              Negotiate
-                                            </Link>
-                                          </Button>
-                                          {/* accept bidd button */}
-                                          {b.status != "ACCEPTED" && (
-                                            <Button
-                                              ml={4}
-                                              _hover={{
-                                                bg: "green.500",
-                                              }}
-                                              mb={4}
-                                              size="sm"
-                                              colorScheme="green"
-                                              variant="outline"
-                                              bg="green.500"
-                                              color="white"
-                                              onClick={() => {
-                                                acceptBid({
-                                                  bid: b.id,
-                                                  task: task.id,
-                                                });
-                                              }}
-                                            >
-                                              Accept Bid
-                                            </Button>
-                                          )}
-                                          {bid.status != "CANCELLED" && (
-                                            <Button
-                                              ml={4}
-                                              _hover={{
-                                                bg: "red.700",
-                                              }}
-                                              mb={4}
-                                              size="sm"
-                                              colorScheme="green"
-                                              variant="outline"
-                                              bg="red.600"
-                                              color="white"
-                                              onClick={() => {
-                                                rejectBid({
-                                                  bid: b.id,
-                                                  task: task.id,
-                                                });
-                                              }}
-                                            >
-                                              Reject Bid
-                                            </Button>
-                                          )}
-                                        </>
                                       )}
-                                  </>
-                                )}
-                            </AccordionPanel>
-                          </AccordionItem>
-                        );
-                      })}
-                  </Accordion>
-                </Stack>
-              </Box>
-            </Box>
+                                      {bid.status != "CANCELLED" && (
+                                        <Button
+                                          ml={4}
+                                          _hover={{
+                                            bg: "red.700",
+                                          }}
+                                          mb={4}
+                                          size="sm"
+                                          colorScheme="green"
+                                          variant="outline"
+                                          bg="red.600"
+                                          color="white"
+                                          onClick={() => {
+                                            rejectBid({
+                                              bid: b.id,
+                                              task: task.id,
+                                            });
+                                          }}
+                                        >
+                                          Reject
+                                        </Button>
+                                      )}
+                                    </Flex>
+                                  )}
+                              </>
+                            )}
+                        </AccordionPanel>
+                      </AccordionItem>
+                    );
+                  })}
+              </Accordion>
+            </Stack>
           </Box>
-        </>
+          {/* ------------------ */}
+          {/* ------------------ */}
+          {/* right side box */}
+          {/* ------------------ */}
+          {/* ------------------ */}
+          {/* ------------------ */}
+
+          <Box pb="5" bg="white" shadow="sm" rounded="sm">
+            <Text color="green.500" as="h5" p={3} className="afont">
+              Details
+            </Text>
+            <Box my="5">
+              <Text className="afont" m="3" mb="0" as="h4" size="md">
+                What client wants :
+              </Text>
+              <Text
+                pl={2}
+                className="qfont"
+                fontSize="16px"
+                mb="0"
+                as="h4"
+                size="md"
+              >
+                {task && task.title}
+              </Text>
+              {task &&
+                task.skill.map((st, i) => {
+                  return (
+                    <Tag
+                      ml={4}
+                      bg="green.500"
+                      className="qfont"
+                      key={i}
+                      color="white"
+                    >
+                      {" "}
+                      in {st.name}
+                    </Tag>
+                  );
+                })}
+            </Box>
+            <Box my="5">
+              <Text className="afont" m="3" mb="0" as="h4" size="md">
+                Description :
+              </Text>
+              <Text
+                m="3"
+                pl={2}
+                className="qfont"
+                fontSize="16px"
+                mb="0"
+                as="h4"
+                size="md"
+              >
+                {task && task.description}
+              </Text>
+            </Box>
+            <Box my="5">
+              <Text className="afont" m="3" mb="0" as="h4" size="md">
+                What client offered :
+              </Text>
+              <Text
+                m="3"
+                pl={2}
+                className="qfont"
+                fontSize="16px"
+                mb="0"
+                as="h4"
+                size="md"
+              >
+                {task && "$" + task.offer}
+              </Text>
+            </Box>
+            {user.role == "VENDOR" &&
+              task.status !== "DONE" &&
+              task.status !== "CANCELLED" &&
+              !bidSubmitted && (
+                <Button
+                  ml={4}
+                  mb={4}
+                  bg="green.500"
+                  color="white"
+                  onClick={onOpen}
+                >
+                  Bid for this task
+                </Button>
+              )}
+
+            {user.role == "VENDOR" && bidSubmitted && (
+              <Alert status="success">
+                <AlertIcon />
+                You have submitted a bid
+              </Alert>
+            )}
+          </Box>
+        </SimpleGrid>
       )}
     </>
   );

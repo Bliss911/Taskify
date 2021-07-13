@@ -1,6 +1,7 @@
 import {
   Stack,
   Box,
+  Center,
   Avatar,
   Text,
   Flex,
@@ -58,13 +59,24 @@ export default function ChatBox() {
 
   return (
     <>
+      <Center bg="white" py="4" className="qfont" fontSize="md">
+        {recipient && recipient.firstname}
+        {recipient === null && "No user selected"}
+      </Center>
       <Stack
         px={"3"}
         spacing="15px"
         overflowY="scroll"
         pb="100px"
+        h="80vh"
         id="chat-bx-scll"
       >
+        {recipient == null && (
+          <Box p="5" className="qfont">
+            Select a user to see messages
+          </Box>
+        )}
+
         {recipient != null &&
           !loadingChatMessages &&
           msgs.map((m, i) => {
@@ -116,7 +128,6 @@ export default function ChatBox() {
             }
           })}
       </Stack>
-      {recipient == null && <Box>Select a user to see messages</Box>}
       {loadingChatMessages && (
         <Box>
           <Spinner size="lg" />

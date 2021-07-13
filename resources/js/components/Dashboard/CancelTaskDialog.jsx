@@ -7,10 +7,12 @@ import {
   Button,
   DrawerOverlay,
   DrawerContent,
+  IconButton,
   Alert,
   AlertIcon,
   DrawerCloseButton,
 } from "@chakra-ui/react";
+import { BsTrash } from "react-icons/bs";
 
 export default function CancelTaskDialog({ task, setTask, setBidders }) {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -67,16 +69,13 @@ export default function CancelTaskDialog({ task, setTask, setBidders }) {
       <Button
         mb={4}
         size="sm"
-        colorScheme="green"
-        variant="outline"
-        bg="red.700"
-        _hover={{
-          bg: "green.500",
-        }}
-        color="white"
+        title="cancel task"
+        ml="auto"
+        fontSize="20px"
+        color="red"
         onClick={() => setIsOpen(true)}
       >
-        Cancel Task
+        <BsTrash />
       </Button>
 
       <Drawer

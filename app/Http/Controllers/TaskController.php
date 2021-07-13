@@ -59,7 +59,7 @@ class TaskController extends Controller
 
 		if (Auth::user()->role == 'CLIENT') {
 
-			$data = Task::where('status', 'COMPLETED')->where('client', Auth::user()->id)->with(['skill', 'user', 'bids.vendor'])->orderByDesc('created_at')->get();
+			$data = Task::where('status', 'DONE')->where('client', Auth::user()->id)->with(['skill', 'user', 'bids.vendor'])->orderByDesc('created_at')->get();
 
 			return $this->sendResult('tasks fetched', $data, [], true);
 		} else {

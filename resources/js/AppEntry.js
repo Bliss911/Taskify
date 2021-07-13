@@ -1,109 +1,77 @@
-import { useEffect, useState } from 'react';
-import { Box, ChakraProvider, Flex } from '@chakra-ui/react';
-import { ColorModeSwitcher } from './ColorModeSwitcher';
-import { Route, Switch } from 'react-router-dom';
-import NotFound from './components/Auth/NotFound';
-import Navbar from './components/Layout/Header/Navbar';
-import PageLoader from './components/Layout/PageLoader';
-import Footer from './components/Layout/Footer'
+import { useEffect, useState } from "react";
+import { ChakraProvider } from "@chakra-ui/react";
 
-import Home from './pages/Home';
-import theme from "./helpers/theme.js"
-import HowItWorks from './pages/HowItWorks';
-import Enroll from './pages/Enroll'
-import Login from './pages/Login';
-import Signup from './pages/SignUp';
-import PrivateRoute from './helpers/PrivateRoute';
-import Feed from './pages/Feed';
-import Dashboard from './pages/Dashboard';
-import { useLocation } from 'react-router-dom';
-import { user } from './components/HowItWorks/data';
-import { useAuth } from './contexts/AuthProvider';
+import { Route, Switch } from "react-router-dom";
+import theme from "./helpers/theme.js";
+import { useLocation } from "react-router-dom";
+import { useAuth } from "./contexts/AuthProvider";
+import Loader from "./components/Loader.js";
+import Footer from "./components/Layout/Footer";
+import Dashboard from "./pages/Dashboard";
 
+import NotFound from "./components/Auth/NotFound";
+import Main from "./pages/Main.jsx";
 
-function App () {
-	const [loading, setLoading] = useState(true)
-	const {user} = useAuth()
-	const { pathname } = useLocation()
-	useEffect(() => {
-		setTimeout(() => {
-			setLoading(false)
-		}, 2100)
-	})
-	return (
-		<ChakraProvider theme={theme}>
-			{/* <ColorModeSwitcher /> */}
-			{loading && <PageLoader />}
-			<Navbar />
-			{!loading && <>
-				<Switch>
-					<Box id='content'
-						margin="auto"
-						maxWidth="1348px"
-						px={8}
+function App() {
+  const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
+  const { pathname } = useLocation();
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 2100);
+  });
+  return (
+    <ChakraProvider theme={theme}>
+      {/* <ColorModeSwitcher /> */}
+      {loading && <Loader />}
+      {!loading && (
+        <>
+          <Switch>
+            <Route
+              exact
+              path={[
+                "/",
+                "/how_it_works",
+                "/join",
+                "/enroll",
+                "/tasks",
+                "/login",
+              ]}
+            >
+              <Main />
+            </Route>
+            <Route
+              exact
+              path={[
+                "/dashboard",
+                "/add_task",
+                "/viewtask",
+                "/messages",
+                "/notifications",
+                "/task_history",
+                "/payment_history",
+                "/profile",
+              ]}
+            >
+              <Dashboard />
+            </Route>
+            {user.role === "ADMIN" && (
+              <Route exact path="/users">
+                <Dashboard />
+              </Route>
+            )}
 
+            <Route path="*">
+              <NotFound />
+            </Route>
+          </Switch>
+        </>
+      )}
 
-					>
-						<Switch>
-							<Route exact path="/">
-								<Home />
-							</Route>
-							<Route exact path="/how_it_works">
-								<HowItWorks />
-							</Route>
-							<Route exact path="/join">
-								<Signup />
-							</Route>
-							<Route exact path="/enroll">
-								<Enroll />
-							</Route>
-							<Route exact path="/tasks">
-								<Feed />
-							</Route>
-							<Route exact path="/login">
-								<Login />
-							</Route>
-							<PrivateRoute exact path='/dashboard'>
-								<Dashboard />
-							</PrivateRoute>
-							<PrivateRoute exact path="/add_task">
-								<Dashboard />
-							</PrivateRoute>
-							<PrivateRoute exact path="/viewtask">
-								<Dashboard />
-							</PrivateRoute>
-							<PrivateRoute exact path='/messages'>
-								<Dashboard />
-							</PrivateRoute>
-							<PrivateRoute exact path='/notifications'>
-								<Dashboard />
-							</PrivateRoute>
-							<PrivateRoute exact path='/task_history'>
-								<Dashboard />
-							</PrivateRoute>
-							<PrivateRoute exact path='/payment_history'>
-								<Dashboard />
-							</PrivateRoute>
-							<PrivateRoute exact path='/messages'>
-								<Dashboard />
-							</PrivateRoute>
-						{user.role === 'ADMIN' &&	<PrivateRoute exact path="/users">
-								<Dashboard />
-							</PrivateRoute>}
-
-							<Route path="*">
-								<NotFound />
-							</Route>
-						</Switch>
-					</Box>
-
-				</Switch>
-			</>}
-
-			<Footer />
-		</ChakraProvider>
-	);
-
+      <Footer />
+    </ChakraProvider>
+  );
 }
 
 export default App;

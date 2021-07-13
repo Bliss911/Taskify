@@ -164,6 +164,7 @@ class AuthController extends Controller
 			$pending = Task::where('status', 'PENDING')->count();
 			$accepted = Task::where('status', 'DONE')->count();
 			$cancelled = Task::count();
+			$wallet = User::where('role', '!=', 'ADMIN')->count();
 			return $this->sendResult('fetched', ['wallet' => $wallet, 'pending_tasks' => $pending, 'cancelled_tasks' => $cancelled, 'accepted_tasks' => $accepted], [], true);
 		}
 	}
@@ -199,5 +200,40 @@ class AuthController extends Controller
 
 
 		return $this->sendResult('fetched', ['user' => $user], [], true);
+	}
+
+
+	public function imageUploadPost(Request $request)
+	{
+		$request->validate([
+			'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+		]);
+
+		$imageName = time() . '.' . $request->image->extension();
+
+		$request->image->move(public_path('images'), $imageName);
+
+		/* Store $imageName name in DATABASE from HERE */
+		User::where('id', Auth::user()->id)->update(['image' => $imageName]);
+
+		$status = true;
+		$errors = [];
+		return $this->sendResult('done', [], $errors, $status);
+	}
+
+	public function user()
+	{
+		$user = Auth::user();
+		return $this->sendResult('fetched', $user, [], true);
+	}
+	public function firstname(Request $request)
+	{
+		$user = User::where('id', Auth::user()->id)->update(['firstname' => $request->firstname]);
+		return $this->sendResult('fetched', $user, [], true);
+	}
+	public function lastname(Request $request)
+	{
+		$user = User::where('id', Auth::user()->id)->update(['lastname' => $request->lastname]);
+		return $this->sendResult('done', $user, [], true);
 	}
 }

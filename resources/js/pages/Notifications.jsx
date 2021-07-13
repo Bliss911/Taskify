@@ -37,14 +37,16 @@ export default function Notifications() {
           </AlertTitle>
         </Alert>
       )}
-      <List spacing={3} pt="2">
+      <List spacing={2}>
         {!loading &&
           !error &&
           notifs.map((p, i) => {
             return (
               <ListItem
+                bg="white"
                 key={i}
                 p={2}
+                py="3"
                 className="qfont"
                 border="1px solid"
                 borderColor="gray.100"
