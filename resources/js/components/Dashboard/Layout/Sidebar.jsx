@@ -21,6 +21,7 @@ import {
   FaHistory,
   FaRegListAlt,
   FaDollarSign,
+  FaQuestionCircle,
 } from "react-icons/fa";
 import { RiFolderHistoryFill } from "react-icons/ri";
 import { useAuth } from "../../../contexts/AuthProvider";
@@ -56,6 +57,11 @@ const linksForClient = [
     icon: <FaHistory />,
   },
   {
+    path: "/complaints",
+    link: "Got Complaints?",
+    icon: <FaQuestionCircle />,
+  },
+  {
     path: "/tasks",
     link: "Available Tasks",
     icon: <FaHistory />,
@@ -86,6 +92,11 @@ const linksForVendor = [
     path: "/payment_history",
     link: "Payment History",
     icon: <FaHistory />,
+  },
+  {
+    path: "/complaints",
+    link: "Got Complaints?",
+    icon: <FaQuestionCircle />,
   },
   {
     path: "/tasks",

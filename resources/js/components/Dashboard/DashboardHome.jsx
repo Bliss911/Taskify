@@ -80,9 +80,11 @@ export default function DashoardHome({
     <>
       <Box>
         <Text fontWeight="light" fontSize="23px" className="qfont">
-          {new Date().getHours() < 12 && "Good Morning " + user.firstname}
-          {new Date().getHours() >= 12 && "Good Afternoon " + user.firstname}
-          {new Date().getHours() >= 17 && "Good Evening " + user.firstname}
+          {new Date().getHours() < 12 && "Good Morning " + user.firstname + "!"}
+          {new Date().getHours() >= 12 &&
+            "Good Afternoon " + user.firstname + "!"}
+          {new Date().getHours() >= 17 &&
+            "Good Evening " + user.firstname + "!"}
         </Text>
         <SimpleGrid columns={[1, 2, 2, 4]} pt={2} spacing="5" flexWrap="wrap">
           <Center rounded="lg" p="4" flexDir="column" bg="white" shadow="md">

@@ -24,6 +24,7 @@ Route::get('jobslist', [SkillController::class, 'index']);
 
 Route::prefix('auth')->group(function () {
 	Route::post('enroll', [AuthController::class, 'enroll']);
+	Route::post('complaints', [AuthController::class, 'complaints']);
 	Route::get('user', [AuthController::class, 'user']);
 	Route::post('firstname', [AuthController::class, 'firstname']);
 	Route::post('lastname', [AuthController::class, 'lastname']);

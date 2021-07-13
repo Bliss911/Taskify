@@ -52,6 +52,7 @@ function App() {
                 "/task_history",
                 "/payment_history",
                 "/profile",
+                "/complaints",
               ]}
             >
               <Dashboard />

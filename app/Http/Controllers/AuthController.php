@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bid;
+use App\Models\Complaint;
 use App\Models\Notif;
 use App\Models\Task;
 use App\Models\User;
@@ -235,5 +236,13 @@ class AuthController extends Controller
 	{
 		$user = User::where('id', Auth::user()->id)->update(['lastname' => $request->lastname]);
 		return $this->sendResult('done', $user, [], true);
+	}
+	public function complaints(Request $request)
+	{
+		$name = $request->name;
+		$email = $request->email;
+		$message = $request->message;
+		Complaint::create(['name' => $name, 'email' => $email, 'message' => $message, 'complainer' => Auth::user()->id]);
+		return $this->sendResult('done', [], [], true);
 	}
 }

@@ -65,6 +65,7 @@ const Header = ({ showSidebarButton = true, onShowSidebar, onOpen }) => {
             {pathname == "/users" && "All Users"}
             {pathname == "/messages" && "Messages"}
             {pathname == "/profile" && "Profile"}
+            {pathname == "/complaints" && "Complaints"}
           </Text>
         </Text>
       </Center>
@@ -78,7 +79,6 @@ const Header = ({ showSidebarButton = true, onShowSidebar, onOpen }) => {
       >
         <Button
           rounded={"full"}
-          variant={"link"}
           cursor={"pointer"}
           _focus={{
             outline: "none",
@@ -88,7 +88,7 @@ const Header = ({ showSidebarButton = true, onShowSidebar, onOpen }) => {
             setShow(!show);
           }}
         >
-          <Avatar size={"sm"} src={user.pic} />
+          {user && user.role + " "} <Avatar ml="2" size={"sm"} src={user.pic} />
         </Button>
 
         <Stack

@@ -25,6 +25,7 @@ import SingleTask from "./SingleTask";
 import AddNewTask from "../components/Dashboard/AddNewTask";
 import { Switch } from "react-router-dom";
 import Profile from "./Profile";
+import Complaints from "./Complaints";
 
 function Dashboard() {
   const { user, isAuth } = useAuth();
@@ -137,6 +138,13 @@ function Dashboard() {
           <Container maxW="container.xl" pt="8">
             <Box px="4">
               <Payments />
+            </Box>
+          </Container>
+        </PrivateRoute>
+        <PrivateRoute exact path="/complaints">
+          <Container maxW="container.xl" pt="8">
+            <Box px="4">
+              <Complaints />
             </Box>
           </Container>
         </PrivateRoute>
